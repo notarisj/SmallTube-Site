@@ -378,13 +378,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
+          // and if lightbox display: none
+          if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
+            return;
+          } else {
             goToSlide(currentIndex - 1);
+          }
         }
     });
     
     nextBtn.addEventListener('click', () => {
         if (currentIndex < screenshots.length - 1) {
+          if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
+            return;
+          } else {
             goToSlide(currentIndex + 1);
+          }
         }
     });
     
