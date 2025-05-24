@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmallTube – YouTube Mini Player for iPhone</title>
+    <meta name="description" content="SmallTube is an iPhone app that enables Picture-in-Picture, background play, and ad-free YouTube viewing with a minimalist interface." />
+    <meta name="keywords" content="SmallTube, YouTube PIP, background play, iPhone app, YouTube no ads, mini player" />
+    <meta name="author" content="Your Name" />
+    <link rel="canonical" href="https://smalltube.example.com/" />
+    <link rel="icon" href="images/icon.png" type="image/png" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="galaxy">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+
+    <nav>
+        <!-- add small log left of logo text -->
+        <div class="logo-container">
+            <img src="images/logo.png" alt="SmallTube Logo" style="margin-bottom: -6px; margin-right: 10px;" class="small-logo" />
+            <a href="#" class="logo">Small<span>Tube</span></a>
+        </div>
+        <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+            <li><a href="#download">Download</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="content fade-in">
+            <img src="images/icon.png" alt="SmallTube App Icon" class="app-icon" />
+            <h1>SmallTube</h1>
+            <p>YouTube Mini Player with Picture-in-Picture, background play, and no ads.</p>
+            <a href="#features" class="btn">
+                <span class="btn-text">Features</span>
+                <i class="fas fa-arrow-down arrow"></i>
+            </a>
+        </div>
+    </section>
+
+    <section id="features" class="section fade-in">
+        <h2>Features</h2>
+        <div class="feature-list">
+            <div class="feature-card">
+                <div class="feature-summary">
+                    <h3>🎥 Picture-in-Picture</h3>
+                    <p>Watch YouTube videos in a floating window while using other apps.</p>
+                </div>
+                <div class="feature-details">
+                    <p>SmallTube enables true Picture-in-Picture mode for YouTube on iPhone, letting you watch videos in a resizable floating window that stays on top of other apps. Perfect for multitasking!</p>
+                    <div class="tech-stack">iOS Technology, Native Implementation</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-summary">
+                    <h3>🎵 Background Play</h3>
+                    <p>Keep listening to YouTube videos with your screen off or while using other apps.</p>
+                </div>
+                <div class="feature-details">
+                    <p>SmallTube bypasses YouTube's background play restrictions, allowing you to listen to music, podcasts, or any video content with your screen locked or while using other applications.</p>
+                    <div class="tech-stack">Audio Continuation, Background Services</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-summary">
+                    <h3>🚫 Ad-Free Experience</h3>
+                    <p>Enjoy YouTube without interruptions from ads.</p>
+                </div>
+                <div class="feature-details">
+                    <p>SmallTube provides an ad-free YouTube experience by blocking all video ads, banner ads, and sponsored content, giving you uninterrupted viewing pleasure.</p>
+                    <div class="tech-stack">Ad Blocking, Content Filtering</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-summary">
+                    <h3>🔋 Battery Efficient</h3>
+                    <p>Optimized to use minimal battery while playing in the background.</p>
+                </div>
+                <div class="feature-details">
+                    <p>SmallTube is designed with battery efficiency in mind, using iOS's native audio APIs to minimize power consumption during background playback.</p>
+                    <div class="tech-stack">Power Optimization, iOS Native</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-summary">
+                    <h3>💻 Open Source</h3>
+                    <p>Transparent code you can review and contribute to.</p>
+                </div>
+                <div class="feature-details">
+                    <p>SkipTube is completely open source, allowing the community to audit the code, suggest improvements, and build new features.</p>
+                    <a href="https://github.com/notarisj/SmallTube" class="feature-link" style="margin-top: 20px;" target="_blank">View on GitHub</a>
+                    <div class="tech-stack">GitHub, Community Driven</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="screenshots" class="section fade-in">
+    <h2>Screenshots</h2>
+    <div class="screenshot-container">
+        <button class="screenshot-nav prev" aria-label="Previous screenshot">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="screenshot-gallery">
+            <div class="screenshot-track">
+                <img src="images/screenshot1.png" alt="SmallTube Screenshot - Home Feed" style="width: 53.5%; height: auto;" class="lightbox-img active" />
+                <img src="images/screenshot2.png" alt="SmallTube Screenshot - Trending" style="width: 53.5%; height: auto;" class="lightbox-img" />
+                <img src="images/screenshot3.png" alt="SmallTube Screenshot - Search" style="width: 53.5%; height: auto;" class="lightbox-img" />
+                <img src="images/screenshot4.png" alt="SmallTube Screenshot - Subscriptions" style="width: 53.5%; height: auto;" class="lightbox-img" />
+                <img src="images/screenshot5.png" alt="SmallTube Screenshot - Picture-in-Picture" style="width: 53.5%; height: auto;" class="lightbox-img" />
+                <img src="images/screenshot6.png" alt="SmallTube Screenshot - Lock screen" style="width: 53.5%; height: auto;" class="lightbox-img" />
+                <img src="images/screenshot7.png" alt="SmallTube Screenshot - Settings" style="width: 53.5%; height: auto;" class="lightbox-img" />
+            </div>
+        </div>
+        <button class="screenshot-nav next" aria-label="Next screenshot">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    <div class="screenshot-dots">
+        <!-- Dots will be added by JavaScript -->
+    </div>
+</section>
+
+    <section id="download" class="section fade-in">
+        <h2>Download</h2>
+        <div class="download-options">
+            <a href="https://apps.apple.com/us/app/smalltube/id1234567890" class="download-btn ios">
+                <i class="fab fa-apple"></i>
+                <span>Download on the App Store</span>
+            </a>
+            <a href="https://testflight.apple.com/join/ABC123XYZ" class="download-btn testflight">
+                <i class="fas fa-rocket"></i>
+                <span>Join Beta TestFlight</span>
+            </a>
+            <a href="https://github.com/yourusername/SmallTube" class="download-btn github">
+                <i class="fab fa-github"></i>
+                <span>View on GitHub</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="close">&times;</span>
+        <div class="nav">
+            <span id="lightboxPrev" class="prev">&#10094;</span>
+        </div>
+        <img class="lightbox-content" id="lightbox-img" />
+        <div class="nav">
+            <span id="lightboxNext" class="next">&#10095;</span>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Your Name. <a href="privacy.html">Privacy Policy</a></p>
+    </footer>
+
+    <footer2>
+      <p>Made with ❤️ by <a href="https://github.com/yourusername" target="_blank">you</a></p>
+    </footer2>
+
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="js/spin-animation.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
