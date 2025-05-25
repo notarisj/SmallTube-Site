@@ -11,6 +11,7 @@
     position: relative;
     margin: 0 auto;
     width: 100%;
+    height: 600px;
 }
 
 .slide {
@@ -39,6 +40,7 @@
 .screenshot-track img {
     flex: 0 0 auto;
     width: 300px;
+    margin-top: 40px;
     height: auto;
     border-radius: 12px;
     cursor: pointer;
@@ -48,6 +50,16 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     pointer-events: none;
+    transform: scale(0.95); /* Slightly smaller by default */
+    opacity: 0.8; /* Slightly transparent by default */
+}
+
+.screenshot-track img.active {
+    transform: scale(1.15); /* Slightly larger when active */
+    opacity: 1; /* Fully opaque when active */
+    z-index: 1; /* Ensure active image is above others */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    border-color: rgba(255, 77, 77, 0.5); /* Highlight border */
 }
 
 .screenshot-track:not(.grabbing) {
@@ -74,8 +86,8 @@
 }
 
 .screenshot-track img:hover {
-    transform: scale(1.02);
-    border-color: rgba(255, 77, 77, 0.3);
+    transform: scale(1) !important; /* Override for hover state */
+    opacity: 0.9; /* Slightly more visible on hover */
 }
 
 .screenshot-nav {

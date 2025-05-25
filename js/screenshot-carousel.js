@@ -36,8 +36,14 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTranslate = prevTranslate;
         setSliderPosition();
         
+        // Update active state for images with smooth transition
         slides.forEach((slide, i) => {
-            slide.querySelector('img').classList.toggle('active', i === index);
+            const img = slide.querySelector('img');
+            if (i === index) {
+                img.classList.add('active');
+            } else {
+                img.classList.remove('active');
+            }
         });
         
         dots.forEach((dot, i) => {
