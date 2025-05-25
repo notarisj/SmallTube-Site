@@ -216,91 +216,111 @@ document.addEventListener('DOMContentLoaded', function() {
     baseSpeed = 0.15; // Normal speed
   });
   
+  let mouseX = 0;
+  let mouseY = 0;
+  const mouseDeadZone = 0.1; // Minimum mouse movement to trigger steering
+
+  // Set up mouse movement tracking once at initialization
+  document.addEventListener('mousemove', (e) => {
+      // Normalize mouse position to -1 to 1 range (center is 0,0)
+      mouseX = (e.clientX - width/2) / (width/2);
+      mouseY = (e.clientY - height/2) / (height/2);
+  });
+
   // Main animation loop
   function animate(time) {
-    if (!lastTime) lastTime = time;
-    const deltaTime = Math.min(time - lastTime, 100) / 16;
-    lastTime = time;
-    
-    // Clear canvas completely
-    ctx.clearRect(0, 0, width, height);
-    
-    // Draw stars
-    for (let i = 0; i < stars.length; i++) {
-      const star = stars[i];
+      if (!lastTime) lastTime = time;
+      const deltaTime = Math.min(time - lastTime, 100) / 16;
+      lastTime = time;
       
-      // Update pulse phase
-      star.pulsePhase += star.pulseSpeed;
-      const pulseFactor = 0.5 + Math.sin(star.pulsePhase) * 0.5;
-      const currentBrightness = star.baseBrightness * (0.7 + 0.3 * pulseFactor);
+      // Clear canvas completely
+      ctx.clearRect(0, 0, width, height);
       
-      // Move star toward viewer
-      star.z -= deltaTime * 50 * (baseSpeed + star.speed);
-      
-      // Reset star if it passes the viewer
-      if (star.z <= -1500) {
-        star.z = 4000;
-        star.x = Math.random() * 4000 - 2000;
-        star.y = Math.random() * 4000 - 2000;
-        star.trail = [];
-      }
-      
-      // Calculate current position
-      const scale = 1500 / (1500 + star.z);
-      const x = star.x * scale + width / 2;
-      const y = star.y * scale + height / 2;
-      const size = star.size * scale;
-      const alpha = Math.min(scale * 2, currentBrightness);
-      
-      // Store current position for trail if hovering
-      if (isHovering) {
-        star.trail.push({x, y, size, alpha});
-        // Limit trail length
-        if (star.trail.length > 8) {
-          star.trail.shift();
-        }
-      } else {
-        star.trail = [];
-      }
-      
-      // Draw trail (only when hovering)
-      if (isHovering && star.trail.length > 1) {
-        for (let j = 0; j < star.trail.length - 1; j++) {
-          const point = star.trail[j];
-          const trailAlpha = point.alpha * (j / star.trail.length) * 0.7;
-          ctx.fillStyle = `rgba(255, 255, 255, ${trailAlpha})`;
+      // Draw stars
+      for (let i = 0; i < stars.length; i++) {
+          const star = stars[i];
+          
+          // Update pulse phase
+          star.pulsePhase += star.pulseSpeed;
+          const pulseFactor = 0.5 + Math.sin(star.pulsePhase) * 0.5;
+          const currentBrightness = star.baseBrightness * (0.7 + 0.3 * pulseFactor);
+          
+          // Move star toward viewer
+          star.z -= deltaTime * 50 * (baseSpeed + star.speed);
+          
+          // Apply mouse steering if outside dead zone
+          if (Math.abs(mouseX) > mouseDeadZone) {
+              star.x += mouseX * star.speed * 40 * deltaTime;
+          }
+          if (Math.abs(mouseY) > mouseDeadZone) {
+              star.y += mouseY * star.speed * 40 * deltaTime;
+          }
+          
+          // Reset star if it passes the viewer
+          if (star.z <= -1500) {
+              star.z = 4000;
+              // Reset position with some randomness but biased opposite to current direction
+              star.x = (Math.random() * 4000 - 2000) - (mouseX * 500);
+              star.y = (Math.random() * 4000 - 2000) - (mouseY * 500);
+              star.trail = [];
+          }
+          
+          // Calculate current position
+          const scale = 1500 / (1500 + star.z);
+          const x = star.x * scale + width / 2;
+          const y = star.y * scale + height / 2;
+          const size = star.size * scale;
+          const alpha = Math.min(scale * 2, currentBrightness);
+          
+          // Store current position for trail if hovering
+          if (isHovering) {
+              star.trail.push({x, y, size, alpha});
+              // Limit trail length
+              if (star.trail.length > 8) {
+                  star.trail.shift();
+              }
+          } else {
+              star.trail = [];
+          }
+          
+          // Draw trail (only when hovering)
+          if (isHovering && star.trail.length > 1) {
+              for (let j = 0; j < star.trail.length - 1; j++) {
+                  const point = star.trail[j];
+                  const trailAlpha = point.alpha * (j / star.trail.length) * 0.7;
+                  ctx.fillStyle = `rgba(255, 255, 255, ${trailAlpha})`;
+                  ctx.beginPath();
+                  ctx.arc(point.x, point.y, point.size * 0.6, 0, Math.PI * 2);
+                  ctx.fill();
+              }
+          }
+          
+          // Draw glow for glowing stars
+          if (star.isGlowing && alpha > 0.1) {
+              const glowSize = size * (3 + pulseFactor * 2);
+              const glowAlpha = alpha * star.glowIntensity * 0.3;
+              
+              const gradient = ctx.createRadialGradient(
+                  x, y, size,
+                  x, y, glowSize
+              );
+              gradient.addColorStop(0, `rgba(255, 77, 77, ${glowAlpha})`);
+              gradient.addColorStop(1, 'rgba(255, 77, 77, 0)');
+              
+              ctx.fillStyle = gradient;
+              ctx.beginPath();
+              ctx.arc(x, y, glowSize, 0, Math.PI * 2);
+              ctx.fill();
+          }
+          
+          // Draw star
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
           ctx.beginPath();
-          ctx.arc(point.x, point.y, point.size * 0.6, 0, Math.PI * 2);
+          ctx.arc(x, y, size, 0, Math.PI * 2);
           ctx.fill();
-        }
       }
       
-      // Draw glow for glowing stars
-      if (star.isGlowing && alpha > 0.1) {
-        const glowSize = size * (3 + pulseFactor * 2);
-        const glowAlpha = alpha * star.glowIntensity * 0.3;
-        
-        const gradient = ctx.createRadialGradient(
-          x, y, size,
-          x, y, glowSize
-        );
-        gradient.addColorStop(0, `rgba(255, 77, 77, ${glowAlpha})`);
-        gradient.addColorStop(1, 'rgba(255, 77, 77, 0)');
-        
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(x, y, glowSize, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      
-      // Draw star
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    animationId = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
   }
   
   // Visibility change handler
