@@ -204,16 +204,35 @@ document.addEventListener('DOMContentLoaded', function() {
   let baseSpeed = 0.15;
   let animationId = null;
   let isHovering = false;
+  let isCtrlPressed = false;
+
+  function updateBaseSpeed() {
+      baseSpeed = (isHovering || isCtrlPressed) ? 1 : 0.15;
+  }
   
   // Button hover effects
   featuresBtn.addEventListener('mouseenter', function() {
     isHovering = true;
-    baseSpeed = 1; // Faster speed when hovering
+    updateBaseSpeed();
   });
-  
+
   featuresBtn.addEventListener('mouseleave', function() {
     isHovering = false;
-    baseSpeed = 0.15; // Normal speed
+    updateBaseSpeed();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Control' && !isCtrlPressed) {
+        isCtrlPressed = true;
+        updateBaseSpeed();
+    }
+  });
+
+  document.addEventListener('keyup', function(e) {
+    if (e.key === 'Control') {
+        isCtrlPressed = false;
+        updateBaseSpeed();
+    }
   });
   
   let mouseX = 0;
@@ -273,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const alpha = Math.min(scale * 2, currentBrightness);
           
           // Store current position for trail if hovering
-          if (isHovering) {
+          if (isHovering || isCtrlPressed) {
               star.trail.push({x, y, size, alpha});
               // Limit trail length
               if (star.trail.length > 8) {
@@ -284,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           
           // Draw trail (only when hovering)
-          if (isHovering && star.trail.length > 1) {
+          if ((isHovering || isCtrlPressed) && star.trail.length > 1) {
               for (let j = 0; j < star.trail.length - 1; j++) {
                   const point = star.trail[j];
                   const trailAlpha = point.alpha * (j / star.trail.length) * 0.7;
