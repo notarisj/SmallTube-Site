@@ -334,13 +334,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const track = document.querySelector('.screenshot-track');
-    const screenshots = document.querySelectorAll('.screenshot-track img');
+    const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.screenshot-nav.prev');
     const nextBtn = document.querySelector('.screenshot-nav.next');
     const dotsContainer = document.querySelector('.screenshot-dots');
     
     let currentIndex = 0;
-    const screenshotWidth = screenshots[0].offsetWidth + 24; // width + gap
+    const slideWidth = slides[0].offsetWidth + 24; // width + gap
     
     // Draggable variables
     let isDragging = false;
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationID = 0;
     
     // Create dots
-    screenshots.forEach((_, index) => {
+    slides.forEach((_, index) => {
         const dot = document.createElement('div');
         dot.classList.add('screenshot-dot');
         if (index === 0) dot.classList.add('active');
@@ -362,18 +362,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateButtons() {
         prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex === screenshots.length - 1;
+        nextBtn.disabled = currentIndex === slides.length - 1;
     }
     
     function goToSlide(index) {
         currentIndex = index;
-        prevTranslate = currentIndex * -screenshotWidth;
+        prevTranslate = currentIndex * -slideWidth;
         currentTranslate = prevTranslate;
         setSliderPosition();
         
         // Update active classes
-        screenshots.forEach((img, i) => {
-            img.classList.toggle('active', i === index);
+        slides.forEach((slide, i) => {
+            slide.querySelector('img').classList.toggle('active', i === index);
         });
         
         dots.forEach((dot, i) => {
@@ -392,20 +392,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isDragging) requestAnimationFrame(animation);
     }
     
-    // Touch events
-    track.addEventListener('touchstart', touchStart);
-    track.addEventListener('touchend', touchEnd);
-    track.addEventListener('touchmove', touchMove);
-    
-    // Mouse events
-    track.addEventListener('mousedown', mouseDown);
-    track.addEventListener('mouseup', mouseUp);
-    track.addEventListener('mouseleave', mouseLeave);
-    track.addEventListener('mousemove', mouseMove);
-    
-    // Disable context menu on track
-    track.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
+    // Add event listeners to each slide
+    slides.forEach(slide => {
+        // Touch events
+        slide.addEventListener('touchstart', touchStart);
+        slide.addEventListener('touchend', touchEnd);
+        slide.addEventListener('touchmove', touchMove);
+        
+        // Mouse events
+        slide.addEventListener('mousedown', mouseDown);
+        slide.addEventListener('mouseup', mouseUp);
+        slide.addEventListener('mouseleave', mouseLeave);
+        slide.addEventListener('mousemove', mouseMove);
+        
+        // Disable context menu
+        slide.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
     });
     
     function getPositionX(event) {
@@ -417,15 +420,17 @@ document.addEventListener('DOMContentLoaded', function() {
         isDragging = true;
         animationID = requestAnimationFrame(animation);
         track.classList.add('grabbing');
+        e.preventDefault(); // Prevent scrolling when dragging
     }
     
     function touchEnd() {
+        if (!isDragging) return;
         isDragging = false;
         cancelAnimationFrame(animationID);
         
         const movedBy = currentTranslate - prevTranslate;
         
-        if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+        if (movedBy < -100 && currentIndex < slides.length - 1) {
             goToSlide(currentIndex + 1);
         } else if (movedBy > 100 && currentIndex > 0) {
             goToSlide(currentIndex - 1);
@@ -440,6 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isDragging) {
             const currentPosition = getPositionX(e);
             currentTranslate = prevTranslate + currentPosition - startPos;
+            e.preventDefault(); // Prevent scrolling when dragging
         }
     }
     
@@ -451,13 +457,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function mouseUp() {
+        if (!isDragging) return;
         isDragging = false;
         cancelAnimationFrame(animationID);
         track.classList.remove('grabbing');
         
         const movedBy = currentTranslate - prevTranslate;
         
-        if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+        if (movedBy < -100 && currentIndex < slides.length - 1) {
             goToSlide(currentIndex + 1);
         } else if (movedBy > 100 && currentIndex > 0) {
             goToSlide(currentIndex - 1);
@@ -474,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const movedBy = currentTranslate - prevTranslate;
             
-            if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+            if (movedBy < -100 && currentIndex < slides.length - 1) {
                 goToSlide(currentIndex + 1);
             } else if (movedBy > 100 && currentIndex > 0) {
                 goToSlide(currentIndex - 1);
@@ -493,21 +500,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
-            if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
-                return;
-            } else {
-                goToSlide(currentIndex - 1);
-            }
+            goToSlide(currentIndex - 1);
         }
     });
     
     nextBtn.addEventListener('click', () => {
-        if (currentIndex < screenshots.length - 1) {
-            if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
-                return;
-            } else {
-                goToSlide(currentIndex + 1);
-            }
+        if (currentIndex < slides.length - 1) {
+            goToSlide(currentIndex + 1);
         }
     });
     
@@ -528,7 +527,10 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            goToSlide(currentIndex);
+            const newSlideWidth = slides[0].offsetWidth + 24;
+            prevTranslate = currentIndex * -newSlideWidth;
+            currentTranslate = prevTranslate;
+            setSliderPosition();
         }, 100);
     });
 });

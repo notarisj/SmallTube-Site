@@ -341,14 +341,22 @@ body.card-expanded .feature-card:not(.expanded) {
     width: 100%;
 }
 
+.slide {
+    flex: 0 0 auto;
+    width: 300px; /* Adjust as needed */
+    padding: 0 12px; /* Half of your gap */
+    cursor: grab;
+    user-select: none;
+}
+
+.slide:active {
+    cursor: grabbing;
+}
+
 .screenshot-track {
     display: flex;
     transition: transform 0.3s ease-out;
-    gap: 1.5rem;
-    padding: 1rem 0;
     will-change: transform;
-    cursor: grab;
-    user-select: none;
 }
 
 .screenshot-track.grabbing {
