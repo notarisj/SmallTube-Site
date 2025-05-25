@@ -1,0 +1,65 @@
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.close:hover {
+    color: #ff4d4d;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
+}
+
+.close:active {
+    color: #ff6b6b;
+    transform: scale(0.95);
+}
+
+.nav span {
+    color: #fff;
+    font-size: 40px;
+    padding: 0 30px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.nav span:hover {
+    color: #ff4d4d;
+    transform: scale(1.2);
+}
+
+.nav span:active {
+    color: #ff6b6b;
+    transform: scale(0.95);
+}

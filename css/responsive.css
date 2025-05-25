@@ -1,0 +1,94 @@
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .screenshot-container {
+        padding: 0 2rem;
+    }
+    
+    .screenshot-track img {
+        width: 250px;
+    }
+    
+    .screenshot-gallery::before,
+    .screenshot-gallery::after {
+        width: 50px;
+    }
+    
+    .screenshot-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .screenshot-gallery {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .screenshot-gallery img {
+        padding: 6px;
+    }
+
+    .feature-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-card.expanded {
+        grid-column: span 1;
+    }
+
+    .privacy-section {
+        padding: 0 1.5rem;
+    }
+    
+    .privacy-content h1 {
+        font-size: 2rem;
+    }
+    
+    .privacy-content h2 {
+        font-size: 1.3rem;
+        margin: 2rem 0 1rem;
+    }
+    
+    nav ul {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .screenshot-container {
+        padding: 0 1.5rem;
+    }
+    
+    .screenshot-track img {
+        width: 200px;
+    }
+    
+    .screenshot-gallery::before,
+    .screenshot-gallery::after {
+        width: 30px;
+    }
+
+    .screenshot-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    nav {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    nav ul {
+        margin-top: 1rem;
+    }
+    
+    .hero .content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+    }
+    
+    .download-options {
+        grid-template-columns: 1fr;
+    }
+}

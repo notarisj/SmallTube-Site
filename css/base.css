@@ -1,0 +1,47 @@
+/* Reset & base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(to bottom, 
+        #1a1a1a 0%, 
+        #2a1e1e 20%, 
+        #3a2222 40%, 
+        #4a2626 60%, 
+        #121212 100%);
+    background-size: 100% 400%;
+    background-attachment: local;
+    min-height: 100vh;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+a {
+    color: #ff6b6b;
+    text-decoration: none;
+}
+
+/* Ensure sections are transparent */
+nav,
+.hero, 
+.section, 
+.feature-list, 
+.screenshot-gallery, 
+.download-options {
+    background: transparent !important;
+}

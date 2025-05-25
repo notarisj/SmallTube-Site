@@ -1,0 +1,14 @@
+/* Sections */
+.section {
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    scroll-margin-top: 20px;
+}
+
+.section h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #fff;
+}

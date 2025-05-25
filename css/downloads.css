@@ -1,0 +1,36 @@
+/* Download options */
+.download-options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    margin-top: 2rem;
+}
+
+.download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.2rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.download-btn.ios {
+    background: linear-gradient(135deg, #ff4d4d, #cc3d3d);
+}
+
+.download-btn.testflight {
+    background: linear-gradient(135deg, #5e72e4, #3a4ab3);
+}
+
+.download-btn.github {
+    background: linear-gradient(135deg, #333, #000);
+}

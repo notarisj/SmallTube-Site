@@ -1,0 +1,114 @@
+/* Hero section */
+.hero {
+    height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.hero .content h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero .content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.app-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease-in-out;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 22%;
+}
+
+.app-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 30%, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(255,255,255,0.1) 40%, 
+                transparent 70%);
+    border-radius: 22%;
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.app-icon:hover::before {
+    opacity: 0.8;
+}
+
+.app-icon:hover {
+    transform: scale(1.1);
+}
+
+.hero .btn {
+    margin-top: 1rem;
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(45deg, #ff4d4d, #ff6b6b);
+    color: #fff;
+    border-radius: 50px;
+    height: 52px;
+    width: 193.56px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.hero .btn:hover {
+    background: linear-gradient(45deg, #ff6b6b, #ff4d4d);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3);
+}
+
+.hero .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 6px rgba(255, 77, 77, 0.4);
+}
+
+.hero .btn .arrow {
+    display: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: floatArrow 1.5s ease-in-out infinite;
+}
+
+@keyframes floatArrow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+.hero .btn:hover .btn-text {
+    display: none;
+}
+
+.hero .btn:hover .arrow {
+    display: block;
+    transform: translateY(0);
+}
