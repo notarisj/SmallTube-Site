@@ -332,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Screenshot carousel functionality
 document.addEventListener('DOMContentLoaded', function() {
     const track = document.querySelector('.screenshot-track');
     const screenshots = document.querySelectorAll('.screenshot-track img');
@@ -342,6 +341,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentIndex = 0;
     const screenshotWidth = screenshots[0].offsetWidth + 24; // width + gap
+    
+    // Draggable variables
+    let isDragging = false;
+    let startPos = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    let animationID = 0;
     
     // Create dots
     screenshots.forEach((_, index) => {
@@ -360,6 +366,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function goToSlide(index) {
+        currentIndex = index;
+        prevTranslate = currentIndex * -screenshotWidth;
+        currentTranslate = prevTranslate;
+        setSliderPosition();
+        
         // Update active classes
         screenshots.forEach((img, i) => {
             img.classList.toggle('active', i === index);
@@ -369,31 +380,134 @@ document.addEventListener('DOMContentLoaded', function() {
             dot.classList.toggle('active', i === index);
         });
         
-        // Calculate scroll position
-        const scrollAmount = index * screenshotWidth;
-        track.style.transform = `translateX(-${scrollAmount}px)`;
-        currentIndex = index;
         updateButtons();
+    }
+    
+    function setSliderPosition() {
+        track.style.transform = `translateX(${currentTranslate}px)`;
+    }
+    
+    function animation() {
+        setSliderPosition();
+        if (isDragging) requestAnimationFrame(animation);
+    }
+    
+    // Touch events
+    track.addEventListener('touchstart', touchStart);
+    track.addEventListener('touchend', touchEnd);
+    track.addEventListener('touchmove', touchMove);
+    
+    // Mouse events
+    track.addEventListener('mousedown', mouseDown);
+    track.addEventListener('mouseup', mouseUp);
+    track.addEventListener('mouseleave', mouseLeave);
+    track.addEventListener('mousemove', mouseMove);
+    
+    // Disable context menu on track
+    track.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+    
+    function getPositionX(event) {
+        return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+    }
+    
+    function touchStart(e) {
+        startPos = getPositionX(e);
+        isDragging = true;
+        animationID = requestAnimationFrame(animation);
+        track.classList.add('grabbing');
+    }
+    
+    function touchEnd() {
+        isDragging = false;
+        cancelAnimationFrame(animationID);
+        
+        const movedBy = currentTranslate - prevTranslate;
+        
+        if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+            goToSlide(currentIndex + 1);
+        } else if (movedBy > 100 && currentIndex > 0) {
+            goToSlide(currentIndex - 1);
+        } else {
+            goToSlide(currentIndex);
+        }
+        
+        track.classList.remove('grabbing');
+    }
+    
+    function touchMove(e) {
+        if (isDragging) {
+            const currentPosition = getPositionX(e);
+            currentTranslate = prevTranslate + currentPosition - startPos;
+        }
+    }
+    
+    function mouseDown(e) {
+        startPos = getPositionX(e);
+        isDragging = true;
+        animationID = requestAnimationFrame(animation);
+        track.classList.add('grabbing');
+    }
+    
+    function mouseUp() {
+        isDragging = false;
+        cancelAnimationFrame(animationID);
+        track.classList.remove('grabbing');
+        
+        const movedBy = currentTranslate - prevTranslate;
+        
+        if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+            goToSlide(currentIndex + 1);
+        } else if (movedBy > 100 && currentIndex > 0) {
+            goToSlide(currentIndex - 1);
+        } else {
+            goToSlide(currentIndex);
+        }
+    }
+    
+    function mouseLeave() {
+        if (isDragging) {
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+            track.classList.remove('grabbing');
+            
+            const movedBy = currentTranslate - prevTranslate;
+            
+            if (movedBy < -100 && currentIndex < screenshots.length - 1) {
+                goToSlide(currentIndex + 1);
+            } else if (movedBy > 100 && currentIndex > 0) {
+                goToSlide(currentIndex - 1);
+            } else {
+                goToSlide(currentIndex);
+            }
+        }
+    }
+    
+    function mouseMove(e) {
+        if (isDragging) {
+            const currentPosition = getPositionX(e);
+            currentTranslate = prevTranslate + currentPosition - startPos;
+        }
     }
     
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
-          // and if lightbox display: none
-          if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
-            return;
-          } else {
-            goToSlide(currentIndex - 1);
-          }
+            if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
+                return;
+            } else {
+                goToSlide(currentIndex - 1);
+            }
         }
     });
     
     nextBtn.addEventListener('click', () => {
         if (currentIndex < screenshots.length - 1) {
-          if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
-            return;
-          } else {
-            goToSlide(currentIndex + 1);
-          }
+            if (document.getElementById("lightbox") && document.getElementById("lightbox").style.display === "flex") {
+                return;
+            } else {
+                goToSlide(currentIndex + 1);
+            }
         }
     });
     

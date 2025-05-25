@@ -343,10 +343,17 @@ body.card-expanded .feature-card:not(.expanded) {
 
 .screenshot-track {
     display: flex;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease-out;
     gap: 1.5rem;
     padding: 1rem 0;
     will-change: transform;
+    cursor: grab;
+    user-select: none;
+}
+
+.screenshot-track.grabbing {
+    cursor: grabbing;
+    transition: none;
 }
 
 .screenshot-track img {
@@ -361,6 +368,12 @@ body.card-expanded .feature-card:not(.expanded) {
     /* background: rgba(255, 255, 255, 0.05); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    pointer-events: none; /* Prevent image drag */
+}
+
+/* For smoother transitions when not dragging */
+.screenshot-track:not(.grabbing) {
+    transition: transform 0.3s ease-out;
 }
 
 /* Fade effect at edges */
