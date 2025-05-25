@@ -32,13 +32,23 @@ document.addEventListener("DOMContentLoaded", () => {
         lightboxImg.src = images[currentIndex].src;
     };
 
-    window.addEventListener("keydown", (e) => {
-        if (lightbox.style.display === "flex") {
-            if (e.key === "ArrowRight") next.click();
-            else if (e.key === "ArrowLeft") prev.click();
-            else if (e.key === "Escape") closeBtn.click();
+window.addEventListener("keydown", (e) => {
+    if (lightbox.style.display === "flex") {
+        if (["ArrowRight", "ArrowLeft", "Escape"].includes(e.key)) {
+            e.preventDefault();
+            e.stopImmediatePropagation(); // Critical: stops other listeners from firing
         }
-    });
+
+        if (e.key === "ArrowRight") {
+            next.click();
+        } else if (e.key === "ArrowLeft") {
+            prev.click();
+        } else if (e.key === "Escape") {
+            closeBtn.click();
+        }
+    }
+}, true); // Use capture phase
+
 
     lightbox.addEventListener("click", (e) => {
         if (e.target === lightbox) {
@@ -46,10 +56,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    function getCurrentCarouselIndex() {
+        const slides = document.querySelectorAll('.slide img');
+        return Array.from(slides).findIndex(img => img.classList.contains('active'));
+    }
+
     const openSlideshowBtn = document.getElementById("openSlideshow");
     if (openSlideshowBtn) {
         openSlideshowBtn.addEventListener("click", () => {
-            showImage(0);
+            const activeSlideIndex = getCurrentCarouselIndex();
+            showImage(activeSlideIndex);
         });
     }
 });
