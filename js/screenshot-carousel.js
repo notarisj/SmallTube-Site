@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dotsContainer = document.querySelector('.screenshot-dots');
     
     let currentIndex = 0;
-    const slideWidth = slides[0].offsetWidth + 24;
+    const slideWidth = slides[0].offsetWidth - 1;
     
     let isDragging = false;
     let startPos = 0;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function setSliderPosition() {
-        track.style.transform = `translateX(${currentTranslate}px)`;
+        track.style.transform = `translateX(${currentTranslate + 149}px)`;
     }
     
     function animation() {
@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     updateButtons();
+    goToSlide(0);
     
     let resizeTimeout;
     window.addEventListener('resize', () => {
