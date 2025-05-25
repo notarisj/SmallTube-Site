@@ -48,7 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function setSliderPosition() {
-        track.style.transform = `translateX(${currentTranslate + 149}px)`;
+        if (window.innerWidth > 768) {
+            track.style.transform = `translateX(${currentTranslate + 149}px)`;
+        } else {
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        }
     }
     
     function animation() {
