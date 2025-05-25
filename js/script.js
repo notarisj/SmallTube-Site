@@ -116,6 +116,14 @@ document.addEventListener("DOMContentLoaded", () => {
             lightbox.style.display = "none";
         }
     });
+
+    // Fullscreen button opens lightbox starting from first image
+    const openSlideshowBtn = document.getElementById("openSlideshow");
+    if (openSlideshowBtn) {
+        openSlideshowBtn.addEventListener("click", () => {
+            showImage(0); // Start from the first image
+        });
+    }
 });
 
 // Back to top button
@@ -230,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
       star.z -= deltaTime * 50 * (baseSpeed + star.speed);
       
       // Reset star if it passes the viewer
-      if (star.z <= 0) {
+      if (star.z <= -1500) {
         star.z = 4000;
         star.x = Math.random() * 4000 - 2000;
         star.y = Math.random() * 4000 - 2000;

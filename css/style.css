@@ -615,11 +615,25 @@ body.card-expanded .feature-card:not(.expanded) {
 .close {
     position: absolute;
     top: 20px;
-    right: 40px;
-    color: #fff;
+    right: 30px;
     font-size: 40px;
-    font-weight: bold;
+    color: #fff;
     cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.close:hover {
+    color: #ff4d4d;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.7);
+}
+
+.close:active {
+    color: #ff6b6b;
+    transform: scale(0.95);
 }
 
 .nav span {
@@ -628,6 +642,17 @@ body.card-expanded .feature-card:not(.expanded) {
     padding: 0 30px;
     cursor: pointer;
     user-select: none;
+    transition: all 0.2s ease;
+}
+
+.nav span:hover {
+    color: #ff4d4d;
+    transform: scale(1.2);
+}
+
+.nav span:active {
+    color: #ff6b6b;
+    transform: scale(0.95);
 }
 
 /* Footer */
@@ -848,4 +873,43 @@ nav a.active {
     .download-options {
         grid-template-columns: 1fr;
     }
+}
+
+.screenshot-header {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+  height: 2.5rem;
+}
+
+.screenshot-header h2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+}
+
+.slideshow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.4rem;
+  border-radius: 5px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.slideshow-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.slideshow-btn:active {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slideshow-btn i {
+  color: white;
 }
