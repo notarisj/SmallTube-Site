@@ -27,12 +27,12 @@
 }
 
 .notification.warning {
-  background-color: #ffc107;
+  background-color: #ffca2d;
   color: #212529;
 }
 
 .notification.error {
-  background-color: #dc3545;
+  background-color: #e74656;
 }
 
 @keyframes slideIn {
