@@ -55,16 +55,18 @@ document.addEventListener('DOMContentLoaded', function() {
         baseSpeed = (isHovering || isCtrlPressed) ? 1 : 0.15;
     }
     
-    // Button hover effects
-    featuresBtn.addEventListener('mouseenter', function() {
-        isHovering = true;
-        updateBaseSpeed();
-    });
+    if (featuresBtn) {
+        // Button hover effects
+        featuresBtn.addEventListener('mouseenter', function() {
+            isHovering = true;
+            updateBaseSpeed();
+        });
 
-    featuresBtn.addEventListener('mouseleave', function() {
-        isHovering = false;
-        updateBaseSpeed();
-    });
+        featuresBtn.addEventListener('mouseleave', function() {
+            isHovering = false;
+            updateBaseSpeed();
+        });
+    }
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Control' && !isCtrlPressed) {

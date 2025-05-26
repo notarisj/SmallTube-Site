@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmallTube Player</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="css/player.css">
+</head>
+<body>
+    <div class="galaxy">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+    </div>
+
+    <nav>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="SmallTube Logo" class="small-logo" />
+            <a href="#" class="logo">Small<span>Tube</span> Player</a>
+        </div>
+        
+        <div class="nav-center">
+            <div class="input-section">
+                <input 
+                    type="text" 
+                    id="video-input" 
+                    placeholder="Enter YouTube video ID or search query..." 
+                    autocomplete="off"
+                    disabled
+                >
+                <button class="search-btn" id="search-btn">
+                    <i class="fa-solid fa-magnifying-glass fa-xs"></i>
+                </button>
+            </div>
+        </div>
+        <div class="nav-right" >
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="player.html">Player</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+            </ul>
+            <button id="starfield-toggle" class="starfield-toggle" title="Toggle Starfield">
+                <i class="fas fa-star"></i>
+            </button>
+            <div class="user-nav-item">
+                <button id="auth-modal-btn" class="auth-modal-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <div class="user-dropdown" id="user-dropdown">
+                    <span id="nav-username"></span>
+                    <hr>
+                    <button id="nav-settings-btn">Settings</button>
+                    <button id="nav-logout-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="player-container">
+        <div class="video-embed-container" id="video-container"></div>
+        <div class="results-grid" id="results-grid"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Settings</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="api-key">YouTube Data API Key</label>
+                <input type="text" id="api-key" class="form-control" placeholder="Enter your YouTube API key">
+            </div>
+            <div class="form-group">
+                <label for="results-count">Results Count</label>
+                <input type="number" id="results-count" class="form-control" placeholder="Number of results (1-50)" min="1" max="50">
+            </div>
+            <button class="save-btn" id="save-settings">Save Settings</button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login / Register</h3>
+                <button class="close-modal" id="close-auth-modal"></button>
+            </div>
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="login-tab">Login</button>
+                <button class="tab-btn" id="register-tab">Register</button>
+            </div>
+            
+            <div class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label for="modal-username">Username</label>
+                    <input type="text" id="modal-username" class="form-control" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label for="modal-password">Password</label>
+                    <input type="password" id="modal-password" class="form-control" placeholder="Enter your password">
+                </div>
+                <div class="auth-btn-row">
+                    <button class="auth-btn-sec" id="modal-back-btn">Back</button>
+                    <button class="auth-btn" id="modal-login-btn">Login</button>
+                </div>
+            </div>
+            
+            <div class="auth-form" id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Choose a password">
+                </div>
+                <button class="auth-btn" id="modal-register-btn">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/starfield.js"></script>
+    <script src="js/intersection-observer.js"></script>
+    <script src="js/player.js"></script>
+</body>
+</html>
