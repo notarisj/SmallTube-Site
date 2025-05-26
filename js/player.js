@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         settingsModal.style.display = 'none';
         
         // Show confirmation
-        alert('Settings saved successfully!');
+        showNotification('success', 'Settings saved successfully!');
     }
 
     // Authentication functions
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return true;
         } catch (error) {
             console.error('Login error:', error);
-            alert('Login failed. Please check your credentials.');
+            showNotification('error', 'Login failed. Please check your credentials!');
             return false;
         }
     }
@@ -132,17 +132,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(errorData.detail || 'Registration failed');
             }
 
-            alert('Registration successful! Please login.');
+            showNotification('success', 'Registration successful! Please login!');
             return true;
         } catch (error) {
             console.error('Registration error:', error);
-            alert(`Registration failed: ${error.message}`);
+            showNotification('error', `Registration failed: ${error.message}`);
             return false;
         }
     }
 
     function logout() {
-        // alert the user before logging out
         if (!confirm('Are you sure you want to log out?')) {
             return;
         }
@@ -230,6 +229,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentSearchResults.length > 0) {
             resultsGrid.classList.add('visible');
         }
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     // Show search results
@@ -269,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!apiKey) {
-            alert('Please set your YouTube Data API key in settings first.');
+            showNotification('warning', 'Please set your YouTube Data API key in settings first.');
             settingsModal.style.display = 'flex';
             return;
         }
@@ -287,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showSearchResults(data.items);
         } catch (error) {
             console.error('Error searching YouTube:', error);
-            alert('Error searching YouTube. Please check your API key and try again.');
+            showNotification('error', 'Error searching YouTube. Please check your API key and try again.');
         }
     }
 
