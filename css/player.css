@@ -157,10 +157,55 @@
     text-align: left;
 }
 
+/* Video info section under player */
+.video-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 1rem;
+}
+
+.video-title-large {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: white;
+    text-align: left;
+}
+
+.channel-info {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.channel-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+}
+
+.channel-name {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
 .video-channel {
+    display: flex;
+    align-items: center;
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
-    text-align: left;
+    margin-top: 0.3rem;
+}
+
+.video-channel-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 6px;
+    object-fit: cover;
 }
 
 .modal {
@@ -532,7 +577,7 @@ nav {
 
 /* Ensure nav stays on top */
 nav {
-    /* position: fixed; */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;

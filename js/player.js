@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Show video player
-    function showVideo(videoId) {
+    async function showVideo(videoId) {
         if (!currentUser) {
             authModal.style.display = 'flex';
             return;
@@ -228,6 +228,37 @@ document.addEventListener('DOMContentLoaded', function() {
         
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
         videoContainer.classList.add('visible');
+        
+        // Add or update video info section
+        let infoContainer = document.querySelector('.video-info-container');
+        if (!infoContainer) {
+            infoContainer = document.createElement('div');
+            infoContainer.className = 'video-info-container';
+            videoContainer.parentNode.insertBefore(infoContainer, videoContainer.nextSibling);
+        }
+
+        // If we have the video data from search results, use it
+        const videoData = currentSearchResults.find(v => v.id.videoId === videoId);
+        if (videoData) {
+            infoContainer.innerHTML = `
+                <h2 class="video-title-large">${videoData.snippet.title}</h2>
+                <div class="channel-info">
+                    <img src="${videoData.snippet.thumbnails.default.url}" alt="${videoData.snippet.channelTitle}" class="channel-icon">
+                    <span class="channel-name">${videoData.snippet.channelTitle}</span>
+                </div>
+            `;
+        } else {
+            // Fallback if we don't have the data
+            infoContainer.innerHTML = `
+                <h2 class="video-title-large">Loading...</h2>
+                <div class="channel-info">
+                    <div class="channel-icon"></div>
+                    <span class="channel-name">Loading...</span>
+                </div>
+            `;
+        }
+
+        aspectRatioWrapper.style.display = 'block';
         
         // Show results grid if it's from search results
         if (currentSearchResults.length > 0) {
@@ -254,7 +285,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="video-info">
                     <h3 class="video-title">${video.snippet.title}</h3>
-                    <p class="video-channel">${video.snippet.channelTitle}</p>
+                    <div class="video-channel">
+                        <img src="${video.snippet.thumbnails.default.url}" alt="${video.snippet.channelTitle}" class="video-channel-icon">
+                        ${video.snippet.channelTitle}
+                    </div>
                 </div>
             `;
             
