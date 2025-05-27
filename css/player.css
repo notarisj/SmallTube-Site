@@ -18,7 +18,7 @@
 
 #video-input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.7rem;
     font-size: 0.8rem;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -75,9 +75,9 @@
 }
 
 .video-embed-container.theater-mode {
-    max-width: 1200px;           /* Wider container */
+    max-width: 1250px;           /* Wider container */
     aspect-ratio: 16 / 7;        /* Slightly taller ratio */
-    transform: scale(1.05);      /* Optional zoom */
+    transform: scale(1.0);      /* Optional zoom */
 }
 
 .video-embed-container.visible {
@@ -157,12 +157,25 @@
     text-align: left;
 }
 
+.video-details-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    width: 1000px;
+}
+
+/* Video details theater mode */
+.video-details-container.theater-mode {
+    width: 1250px; /* Wider container in theater mode */
+}
+
 /* Video info section under player */
 .video-info-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1000px;
+    /* max-width: 1250px; */
     margin-bottom: 1rem;
 }
 
@@ -587,10 +600,11 @@ nav {
 /* Aspect Ratio Controls - Improved Version */
 .aspect-ratio-wrapper {
     position: relative;
-    width: fit-content;
+    /* width: fit-content; */
     height: fit-content;
     margin-bottom: 1.5rem; /* Match video container margin */
     align-self: center; /* Better center alignment */
+    display: none; /* Hidden by default */
 }
 
 /* Main controls container */

@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const playerContainer = document.querySelector('.player-container');
     const videoEmbedContainer = document.querySelector('.video-embed-container');
     const theaterBtn = document.querySelector('.theater-btn');
+    const aspectRatioWrapper = document.querySelector('.aspect-ratio-wrapper');
+    const videoDetailsContainer = document.querySelector('.video-details-container');
 
     // State variables
     let currentVideoId = '';
@@ -259,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         aspectRatioWrapper.style.display = 'block';
+        resultsGrid.style.marginTop = '20px';
         
         // Show results grid if it's from search results
         if (currentSearchResults.length > 0) {
@@ -331,6 +334,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error searching YouTube:', error);
             showNotification('error', 'Error searching YouTube. Please check your API key and try again.');
         }
+
+        resultsGrid.style.marginTop = '50px';
     }
 
     // Event listeners
@@ -514,6 +519,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Theater Mode Toggle
     theaterBtn.addEventListener('click', () => {
         videoEmbedContainer.classList.toggle('theater-mode');
+        // Synchronize videoDetailsContainer with videoEmbedContainer
+        if (videoEmbedContainer.classList.contains('theater-mode')) {
+            videoDetailsContainer.classList.add('theater-mode');
+        } else {
+            videoDetailsContainer.classList.remove('theater-mode');
+        }
         theaterBtn.classList.toggle('active');
 
         const isTheater = videoEmbedContainer.classList.contains('theater-mode');
@@ -526,6 +537,13 @@ document.addEventListener('DOMContentLoaded', function() {
         videoEmbedContainer.classList.add('theater-mode');
         theaterBtn.classList.add('active');
     }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 't') {
+            e.preventDefault();
+            theaterBtn.click();
+        }
+    });
 
     // Call this in your initialization
     loadStarfieldPreference();

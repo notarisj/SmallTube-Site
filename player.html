@@ -67,26 +67,29 @@
 
     <div class="player-container">
         <div class="video-embed-container" id="video-container" style="margin-top: 50px;"></div>
-        <div class="aspect-ratio-wrapper">
-            <div class="aspect-ratio-controls">
-                <button class="collapsed-icon" disabled>
-                    <i class="fa-solid fa-gear" style="margin-right: 1px; margin-bottom: 1px;"></i>
-                </button>
-                <button class="ratio-btn" data-ratio="16/9" title="16:9 (Widescreen)">
-                    <span class="icon-rectangle wide"></span>
-                </button>
-                <button class="ratio-btn" data-ratio="2/1" title="2:1 (Ultra Wide)">
-                    <span class="icon-rectangle ultra-wide"></span>
-                </button>
-                <button class="ratio-btn" data-ratio="4/3" title="4:3 (Standard)">
-                    <span class="icon-rectangle standard"></span>
-                </button>
-                <button class="ratio-btn" data-ratio="1/1" title="1:1 (Square)">
-                    <span class="icon-rectangle square"></span>
-                </button>
-                <button class="theater-btn" title="Toggle Theater Mode">
-                    <i class="fas fa-expand" style="margin-left: 0.5px; margin-top: 0.5px;"></i>
-                </button>
+        <div class="video-details-container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="video-info-container" style="flex: 1;"></div>
+            <div class="aspect-ratio-wrapper" style="flex-shrink: 0;">
+                <div class="aspect-ratio-controls">
+                    <button class="collapsed-icon" disabled>
+                        <i class="fa-solid fa-gear" style="margin-right: 1px; margin-bottom: 1px;"></i>
+                    </button>
+                    <button class="ratio-btn" data-ratio="16/9" title="16:9 (Widescreen)">
+                        <span class="icon-rectangle wide"></span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="2/1" title="2:1 (Ultra Wide)">
+                        <span class="icon-rectangle ultra-wide"></span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="4/3" title="4:3 (Standard)">
+                        <span class="icon-rectangle standard"></span>
+                    </button>
+                    <button class="ratio-btn" data-ratio="1/1" title="1:1 (Square)">
+                        <span class="icon-rectangle square"></span>
+                    </button>
+                    <button class="theater-btn" title="Toggle Theater Mode">
+                        <i class="fas fa-expand" style="margin-left: 0.5px; margin-top: 0.5px;"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="results-grid" id="results-grid"></div>
