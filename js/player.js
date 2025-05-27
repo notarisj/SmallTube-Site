@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchBtn = document.getElementById('search-btn');
 
     const playerContainer = document.querySelector('.player-container');
+    const videoEmbedContainer = document.querySelector('.video-embed-container');
     const theatreBtn = document.querySelector('.theatre-btn');
 
     // State variables
@@ -411,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === '/' && currentUser) {
             e.preventDefault();
             videoInput.focus();
+            videoInput.select();
         }
     });
 
@@ -477,10 +479,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Theatre Mode Toggle
     theatreBtn.addEventListener('click', () => {
-        playerContainer.classList.toggle('theatre-mode');
+        videoEmbedContainer.classList.toggle('theatre-mode');
         theatreBtn.classList.toggle('active');
 
-        const isTheatre = playerContainer.classList.contains('theatre-mode');
+        const isTheatre = videoEmbedContainer.classList.contains('theatre-mode');
         localStorage.setItem('smalltubeTheatreMode', isTheatre ? 'true' : 'false');
     });
 

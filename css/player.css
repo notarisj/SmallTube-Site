@@ -5,7 +5,6 @@
     padding: 2rem;
     position: relative;
     z-index: 10;
-    margin-top: 70px;
 }
 
 /* override body minheight */
@@ -72,6 +71,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     display: none;
+    transition: all 0.3s ease;
+}
+
+.video-embed-container.theatre-mode {
+    max-width: 1200px;           /* Wider container */
+    aspect-ratio: 16 / 7;        /* Slightly taller ratio */
+    transform: scale(1.05);      /* Optional zoom */
 }
 
 .video-embed-container.visible {
@@ -526,7 +532,7 @@ nav {
 
 /* Ensure nav stays on top */
 nav {
-    position: fixed;
+    /* position: fixed; */
     top: 0;
     left: 0;
     right: 0;
