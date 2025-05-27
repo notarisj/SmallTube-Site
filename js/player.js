@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const playerContainer = document.querySelector('.player-container');
     const videoEmbedContainer = document.querySelector('.video-embed-container');
-    const theatreBtn = document.querySelector('.theatre-btn');
+    const theaterBtn = document.querySelector('.theater-btn');
 
     // State variables
     let currentVideoId = '';
@@ -477,20 +477,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Call this in your initialization
     loadAspectRatioPreference();
 
-    // Theatre Mode Toggle
-    theatreBtn.addEventListener('click', () => {
-        videoEmbedContainer.classList.toggle('theatre-mode');
-        theatreBtn.classList.toggle('active');
+    // Theater Mode Toggle
+    theaterBtn.addEventListener('click', () => {
+        videoEmbedContainer.classList.toggle('theater-mode');
+        theaterBtn.classList.toggle('active');
 
-        const isTheatre = videoEmbedContainer.classList.contains('theatre-mode');
-        localStorage.setItem('smalltubeTheatreMode', isTheatre ? 'true' : 'false');
+        const isTheater = videoEmbedContainer.classList.contains('theater-mode');
+        localStorage.setItem('smalltubeTheaterMode', isTheater ? 'true' : 'false');
     });
 
-    // Load Theatre Mode Preference
-    const theatrePref = localStorage.getItem('smalltubeTheatreMode');
-    if (theatrePref === 'true') {
-        playerContainer.classList.add('theatre-mode');
-        theatreBtn.classList.add('active');
+    // Load Theater Mode Preference
+    const theaterPref = localStorage.getItem('smalltubeTheaterMode');
+    if (theaterPref === 'true') {
+        videoEmbedContainer.classList.add('theater-mode');
+        theaterBtn.classList.add('active');
     }
 
     // Call this in your initialization

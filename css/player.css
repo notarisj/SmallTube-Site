@@ -74,7 +74,7 @@
     transition: all 0.3s ease;
 }
 
-.video-embed-container.theatre-mode {
+.video-embed-container.theater-mode {
     max-width: 1200px;           /* Wider container */
     aspect-ratio: 16 / 7;        /* Slightly taller ratio */
     transform: scale(1.05);      /* Optional zoom */
@@ -576,7 +576,7 @@ nav {
 
 /* Buttons - hidden by default */
 .ratio-btn,
-.theatre-btn {
+.theater-btn {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: rgba(255, 255, 255, 0.7);
@@ -598,7 +598,7 @@ nav {
 
 /* Reveal buttons on hover with staggered animation */
 .aspect-ratio-wrapper:hover .ratio-btn,
-.aspect-ratio-wrapper:hover .theatre-btn {
+.aspect-ratio-wrapper:hover .theater-btn {
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
@@ -610,7 +610,7 @@ nav {
 .aspect-ratio-wrapper:hover .ratio-btn:nth-child(3) { transition-delay: 0.1s; }
 .aspect-ratio-wrapper:hover .ratio-btn:nth-child(4) { transition-delay: 0.15s; }
 .aspect-ratio-wrapper:hover .ratio-btn:nth-child(5) { transition-delay: 0.2s; }
-.aspect-ratio-wrapper:hover .theatre-btn { transition-delay: 0.25s; }
+.aspect-ratio-wrapper:hover .theater-btn { transition-delay: 0.25s; }
 
 /* Collapsed icon - visible by default */
 .collapsed-icon {
@@ -643,26 +643,26 @@ nav {
 
 /* Button hover states */
 .ratio-btn:hover,
-.theatre-btn:hover {
+.theater-btn:hover {
     background: rgba(255, 77, 77, 0.3);
     color: white;
     /* transform: scale(1.1); */
 }
 
 .ratio-btn.active,
-.theatre-btn.active {
+.theater-btn.active {
     background: #ff4d4d;
     color: white;
     /* transform: scale(1.5); */
 }
 
-/* Theatre mode button specific styling */
-.theatre-btn {
+/* Theater mode button specific styling */
+.theater-btn {
     margin-left: 8px; /* Add some separation from ratio buttons */
     position: relative;
 }
 
-.theatre-btn::before {
+.theater-btn::before {
     content: '';
     position: absolute;
     left: -4px;
@@ -674,7 +674,7 @@ nav {
     display: none;
 }
 
-.aspect-ratio-wrapper:hover .theatre-btn::before {
+.aspect-ratio-wrapper:hover .theater-btn::before {
     display: block;
 }
 
