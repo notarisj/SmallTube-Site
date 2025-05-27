@@ -1,0 +1,24 @@
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Consistent spacing */
+}
+
+.small-logo {
+    height: 30px; /* Fixed height */
+    width: auto; /* Maintain aspect ratio */
+    margin: 0; /* Reset any margins */
+    vertical-align: middle; /* Better alignment */
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.logo span {
+    color: #ff4d4d;
+}

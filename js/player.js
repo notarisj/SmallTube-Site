@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLogoutBtn = document.getElementById('nav-logout-btn');
     const searchBtn = document.getElementById('search-btn');
 
+    const playerContainer = document.querySelector('.player-container');
+    const theatreBtn = document.querySelector('.theatre-btn');
+
     // State variables
     let currentVideoId = '';
     let currentSearchResults = [];
@@ -440,6 +443,53 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('smalltubeStarfieldEnabled', starfieldEnabled.toString());
         updateStarfieldVisibility();
     });
+
+    // Add this to your existing JavaScript
+    document.querySelectorAll('.ratio-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const ratio = this.getAttribute('data-ratio');
+            const [width, height] = ratio.split('/');
+            const aspectRatio = `${width}/${height}`;
+            
+            // Update the video container
+            videoContainer.style.aspectRatio = aspectRatio;
+            
+            // Update active state
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Save preference
+            localStorage.setItem('smalltubeAspectRatio', aspectRatio);
+        });
+    });
+
+    // Load saved aspect ratio on page load
+    function loadAspectRatioPreference() {
+        const savedRatio = localStorage.getItem('smalltubeAspectRatio') || '16/9';
+        videoContainer.style.aspectRatio = savedRatio;
+        
+        // Set active button
+        document.querySelector(`.ratio-btn[data-ratio="${savedRatio}"]`)?.classList.add('active');
+    }
+
+    // Call this in your initialization
+    loadAspectRatioPreference();
+
+    // Theatre Mode Toggle
+    theatreBtn.addEventListener('click', () => {
+        playerContainer.classList.toggle('theatre-mode');
+        theatreBtn.classList.toggle('active');
+
+        const isTheatre = playerContainer.classList.contains('theatre-mode');
+        localStorage.setItem('smalltubeTheatreMode', isTheatre ? 'true' : 'false');
+    });
+
+    // Load Theatre Mode Preference
+    const theatrePref = localStorage.getItem('smalltubeTheatreMode');
+    if (theatrePref === 'true') {
+        playerContainer.classList.add('theatre-mode');
+        theatreBtn.classList.add('active');
+    }
 
     // Call this in your initialization
     loadStarfieldPreference();
