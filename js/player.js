@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         videoInput.focus();
         const input = videoInput.value.trim();
         if (input) {
+            saveToSearchHistory(input); // Add this line
             if (isVideoId(input)) {
                 showVideo(input);
             } else {
@@ -318,24 +319,55 @@ document.addEventListener('DOMContentLoaded', function() {
             settingsModal.style.display = 'flex';
             return;
         }
-        
+
         try {
-            const response = await fetch(
+            // 1. Search for videos
+            const searchResponse = await fetch(
                 `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${resultsCount}&q=${encodeURIComponent(query)}&type=video&key=${apiKey}`
             );
-            
-            if (!response.ok) {
-                throw new Error('YouTube API request failed');
+            if (!searchResponse.ok) throw new Error('YouTube API request failed');
+            const searchData = await searchResponse.json();
+
+            // 2. Get video IDs
+            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+            if (!videoIds) {
+                showSearchResults([]);
+                return;
             }
-            
-            const data = await response.json();
-            showSearchResults(data.items);
+
+            // 3. Fetch video details (duration, dimensions)
+            const detailsResponse = await fetch(
+                `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&key=${apiKey}&id=${videoIds}`
+            );
+            if (!detailsResponse.ok) throw new Error('Failed to fetch video details');
+            const detailsData = await detailsResponse.json();
+
+            // 4. Filter out shorts/portrait videos under 1.5 minutes
+            const filtered = detailsData.items.filter(video => {
+                // Parse ISO 8601 duration to seconds
+                const match = video.contentDetails.duration.match(/PT(?:(\d+)M)?(?:(\d+)S)?/);
+                const minutes = match && match[1] ? parseInt(match[1]) : 0;
+                const seconds = match && match[2] ? parseInt(match[2]) : 0;
+                const totalSeconds = minutes * 60 + seconds;
+
+                // Shorts are usually portrait (height > width) and < 90s
+                // YouTube API does not provide width/height, but we can guess by title/description or skip if duration < 90s
+                return totalSeconds >= 90;
+            });
+
+            // 5. Show filtered results
+            showSearchResults(filtered.map(video => ({
+                id: { videoId: video.id },
+                snippet: video.snippet
+            })));
         } catch (error) {
             console.error('Error searching YouTube:', error);
             showNotification('error', 'Error searching YouTube. Please check your API key and try again.');
         }
 
-        resultsGrid.style.marginTop = '50px';
+        // close history dropdown
+        document.getElementById('search-history-dropdown').style.display = 'none';
+        // resultsGrid.style.marginTop = '50px';
     }
 
     // Event listeners
@@ -343,6 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') {
             const input = this.value.trim();
             if (input) {
+                saveToSearchHistory(input); // Add this line
                 if (isVideoId(input)) {
                     showVideo(input);
                 } else {
@@ -350,6 +383,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
+    });
+
+    videoInput.addEventListener('focus', renderSearchHistory);
+    videoInput.addEventListener('blur', function() {
+        // Small delay to allow click events to register
+        setTimeout(() => {
+            document.getElementById('search-history-dropdown').style.display = '';
+        }, 200);
     });
 
     settingsBtn.addEventListener('click', function() {
@@ -539,11 +580,135 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.addEventListener('keydown', function(e) {
-        if (e.key.toLowerCase() === 't') {
+        // and video-input not in focus
+        if (e.key.toLowerCase() === 't' && 
+            document.activeElement !== videoInput) {
             e.preventDefault();
             theaterBtn.click();
         }
     });
+
+    // Search history functions
+    function saveToSearchHistory(query) {
+        if (!query.trim()) return;
+        
+        let history = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        
+        // Remove if already exists
+        history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
+        
+        // Add to beginning
+        history.unshift(query);
+        
+        // Keep only last 10 items
+        if (history.length > 10) {
+            history = history.slice(0, 10);
+        }
+        
+        localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+    }
+
+    function loadSearchHistory() {
+        return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+    }
+
+    function clearSearchHistory() {
+        localStorage.removeItem('smalltubeSearchHistory');
+        renderSearchHistory();
+    }
+
+    function deleteSearchHistoryItem(index) {
+        let history = loadSearchHistory();
+        history.splice(index, 1);
+        localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+        renderSearchHistory();
+    }
+
+    function renderSearchHistory() {
+        const history = loadSearchHistory();
+        const dropdown = document.getElementById('search-history-dropdown');
+        dropdown.innerHTML = '';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'search-history-header';
+        header.innerHTML = `
+            <span>Recent searches</span>
+            <span class="search-history-clear" id="clear-search-history">Clear all</span>
+        `;
+        dropdown.appendChild(header);
+
+        // No history
+        if (history.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'search-history-item';
+            empty.textContent = 'No search history';
+            dropdown.appendChild(empty);
+            // Clear all event
+            header.querySelector('.search-history-clear').addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearSearchHistory();
+            });
+            return;
+        }
+
+        // Items
+        history.forEach((query, index) => {
+            const item = document.createElement('div');
+            item.className = 'search-history-item';
+
+            const querySpan = document.createElement('span');
+            querySpan.className = 'search-history-query';
+            querySpan.textContent = query;
+
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'search-history-delete';
+            deleteBtn.setAttribute('data-index', index);
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+
+            // Delete event
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteSearchHistoryItem(index);
+            });
+
+            // Fill input and search on click
+            item.addEventListener('mousedown', (e) => {
+                // Only if not clicking delete
+                if (!e.target.closest('.search-history-delete')) {
+                    videoInput.value = query;
+                    // Prevent blur so dropdown stays open
+                    e.preventDefault();
+                    setTimeout(() => {
+                        videoInput.focus();
+                        videoInput.setSelectionRange(videoInput.value.length, videoInput.value.length);
+                        document.getElementById('search-history-dropdown').style.display = 'none'; // Close dropdown
+                        searchYouTube(query); // Trigger search
+                    }, 0);
+                }
+            });
+
+            item.appendChild(querySpan);
+            item.appendChild(deleteBtn);
+            dropdown.appendChild(item);
+        });
+
+        // Clear all event
+        header.querySelector('.search-history-clear').addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearSearchHistory();
+        });
+    }
+
+    // Prevent dropdown from closing when clicking inside
+    document.getElementById('search-history-dropdown').addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+
+    const searchHistoryDropdown = document.createElement('div');
+    searchHistoryDropdown.id = 'search-history-dropdown';
+    searchHistoryDropdown.className = 'search-history-dropdown';
+    document.querySelector('.input-section').appendChild(searchHistoryDropdown);
 
     // Call this in your initialization
     loadStarfieldPreference();

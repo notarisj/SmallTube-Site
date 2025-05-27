@@ -11,7 +11,7 @@
 
 .input-section {
     width: 100%;
-    max-width: 600px;
+    max-width: 400px;
     transition: all 0.5s ease;
     position: relative;
 }
@@ -101,10 +101,10 @@
 
 .results-grid {
     display: none;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 1.5rem;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1600px;
     margin-top: 1rem;
 }
 
@@ -769,4 +769,79 @@ nav {
 .icon-rectangle.square {
     width: 12px;
     height: 12px;
+}
+
+/* Search History Dropdown */
+.search-history-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(26, 26, 26, 0.95);
+    border-radius: 0 0 10px 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 2001;
+    display: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.search-history-item {
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.search-history-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.search-history-query {
+    flex-grow: 1;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.search-history-delete {
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0.2rem;
+    border-radius: 100%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-history-delete:hover {
+    color: #ff4d4d;
+}
+
+.search-history-header {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-history-clear {
+    color: #ff4d4d;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.search-history-clear:hover {
+    text-decoration: underline;
+}
+
+/* Show dropdown when input is focused */
+.input-section:focus-within .search-history-dropdown {
+    display: block;
 }
