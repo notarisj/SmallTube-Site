@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         currentVideoId = videoId;
-        
+
         // Create or update iframe
         let iframe = videoContainer.querySelector('iframe');
         if (!iframe) {
@@ -228,10 +228,17 @@ document.addEventListener('DOMContentLoaded', function() {
             iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
             videoContainer.appendChild(iframe);
         }
-        
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+
+        // Build CodePen proxy URL with YouTube parameters
+        const params = new URLSearchParams({
+            v: videoId,
+            autoplay: '1',
+            rel: '0'
+        });
+        iframe.src = `https://cdpn.io/pen/debug/oNPzxKo?${params.toString()}`;
+
         videoContainer.classList.add('visible');
-        
+
         // Add or update video info section
         let infoContainer = document.querySelector('.video-info-container');
         if (!infoContainer) {
@@ -253,17 +260,17 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Fallback if we don't have the data
             infoContainer.innerHTML = `
-                <h2 class="video-title-large">Loading...</h2>
+                <h2 class="video-title-large"></h2>
                 <div class="channel-info">
                     <div class="channel-icon"></div>
-                    <span class="channel-name">Loading...</span>
+                    <span class="channel-name"></span>
                 </div>
             `;
         }
 
         aspectRatioWrapper.style.display = 'block';
         resultsGrid.style.marginTop = '20px';
-        
+
         // Show results grid if it's from search results
         if (currentSearchResults.length > 0) {
             resultsGrid.classList.add('visible');
@@ -363,6 +370,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error searching YouTube:', error);
             showNotification('error', 'Error searching YouTube. Please check your API key and try again.');
+        }
+
+        // hide .welcome-message
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.style.display = 'none';
         }
 
         // close history dropdown
@@ -713,7 +726,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Call this in your initialization
     loadStarfieldPreference();
 
+    const welcomeExamplesList = document.getElementById('welcome-examples-list');
+    if (welcomeExamplesList) {
+        welcomeExamplesList.querySelectorAll('li').forEach(li => {
+            li.style.cursor = 'pointer';
+            li.addEventListener('click', function() {
+                const query = this.getAttribute('data-query') || this.textContent;
+                videoInput.value = query;
+                saveToSearchHistory(query);
+                searchYouTube(query);
+            });
+        });
+    }
+
     // Initialize
     checkAuth();
     loadSettings();
+
+        // Auto-load video from URL hash if present and valid
+    function tryAutoLoadVideoFromHash() {
+        const hash = window.location.hash.replace(/^#/, '').trim();
+        // Accept only 11-char YouTube video IDs (no key=value, just #VIDEOID)
+        if (hash.length === 11 && !hash.includes(' ')) {
+            // If already authenticated, show video immediately
+            if (currentUser) {
+                showVideo(hash);
+            } else {
+                // Wait for login, then show video
+                const authInterval = setInterval(() => {
+                    if (currentUser) {
+                        clearInterval(authInterval);
+                        showVideo(hash);
+                    }
+                }, 200);
+            }
+        }
+    }
+
+    tryAutoLoadVideoFromHash();
 });
