@@ -765,3 +765,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     tryAutoLoadVideoFromHash();
 });
+
+// Bottom navbar auto-hide behavior
+let lastScrollPosition = 0;
+let navbarTimeout;
+
+function handleNavbarVisibility() {
+  const currentScrollPosition = window.scrollY;
+  const navbar = document.querySelector('.bottom-navbar');
+  
+  // Clear any existing timeout
+  clearTimeout(navbarTimeout);
+  
+  // Scrolling down - hide navbar
+  if (currentScrollPosition > lastScrollPosition && currentScrollPosition > 100) {
+    navbar.style.bottom = '-30px';
+  } 
+  // Scrolling up - show navbar
+  else {
+    navbar.style.bottom = '0';
+    // Auto-hide after 3 seconds of inactivity
+    navbarTimeout = setTimeout(() => {
+      if (window.scrollY > 100) {
+        navbar.style.bottom = '-30px';
+      }
+    }, 3000);
+  }
+  
+  lastScrollPosition = currentScrollPosition;
+}
+
+// Initialize the navbar behavior
+document.addEventListener('DOMContentLoaded', () => {
+  const navbar = document.querySelector('.bottom-navbar');
+  
+  // Show navbar when mouse approaches bottom of screen
+  document.addEventListener('mousemove', (e) => {
+    const distanceFromBottom = window.innerHeight - e.clientY;
+    if (distanceFromBottom < 50) { // 50px from bottom
+      navbar.style.bottom = '0';
+      clearTimeout(navbarTimeout);
+    }
+  });
+  
+  // Scroll behavior
+  window.addEventListener('scroll', handleNavbarVisibility);
+});
