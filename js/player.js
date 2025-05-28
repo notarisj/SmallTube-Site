@@ -785,6 +785,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    async function loadSearchHistoryDetails() {
+        if (!currentUser) {
+            return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        }
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load history');
+            
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error loading search history:', error);
+            return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        }
+    }
+
     async function clearSearchHistory() {
         if (!currentUser) {
             localStorage.removeItem('smalltubeSearchHistory');
@@ -816,8 +838,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // First get the full history to find the ID
-            const history = await loadSearchHistory();
-            if (index >= 0 && index < history.length) {
+            const history = await loadSearchHistoryDetails();
+            if (
+                index >= 0 &&
+                index < history.length &&
+                history[index].id !== undefined
+            ) {
                 const response = await fetch(`${API_BASE_URL}/search-history/${history[index].id}`, {
                     method: 'DELETE',
                     headers: {
@@ -826,6 +852,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (!response.ok) throw new Error('Failed to delete item');
+                renderSearchHistory('');
+            } else {
+                throw new Error('Invalid history index or missing ID');
             }
         } catch (error) {
             console.error('Error deleting search item:', error);
