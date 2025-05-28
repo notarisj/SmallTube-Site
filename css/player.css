@@ -978,8 +978,3 @@ body:hover .bottom-navbar {
 .footer-right a:hover {
   color: #ff4d4d;
 }
-
-/* Adjust body padding to prevent content hiding */
-body {
-  /* padding-bottom: 30px; */
-}

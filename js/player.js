@@ -530,7 +530,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    videoInput.addEventListener('focus', renderSearchHistory);
+    videoInput.addEventListener('focus', () => renderSearchHistory(''));
+    videoInput.addEventListener('input', function() {
+        renderSearchHistory(this.value.trim());
+    });
     videoInput.addEventListener('blur', function() {
         // Small delay to allow click events to register
         setTimeout(() => {
@@ -735,43 +738,106 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Search history functions
-    function saveToSearchHistory(query) {
-        if (!query.trim()) return;
+    async function saveToSearchHistory(query) {
+        if (!currentUser || !query.trim()) return;
         
-        let history = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
-        
-        // Remove if already exists
-        history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
-        
-        // Add to beginning
-        history.unshift(query);
-        
-        // Keep only last 10 items
-        if (history.length > 10) {
-            history = history.slice(0, 10);
+        try {
+            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ query })
+            });
+            
+            if (!response.ok) throw new Error('Failed to save search');
+        } catch (error) {
+            console.error('Error saving search:', error);
+            // Fallback to localStorage if needed
+            let history = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+            history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
+            history.unshift(query);
+            if (history.length > 10) history = history.slice(0, 10);
+            localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+        }
+    }
+
+    async function loadSearchHistory() {
+        if (!currentUser) {
+            return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
         }
         
-        localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+        try {
+            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load history');
+            
+            const data = await response.json();
+            return data.map(item => item.query);
+        } catch (error) {
+            console.error('Error loading search history:', error);
+            return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        }
     }
 
-    function loadSearchHistory() {
-        return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+    async function clearSearchHistory() {
+        if (!currentUser) {
+            localStorage.removeItem('smalltubeSearchHistory');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to clear history');
+        } catch (error) {
+            console.error('Error clearing search history:', error);
+            localStorage.removeItem('smalltubeSearchHistory');
+        }
     }
 
-    function clearSearchHistory() {
-        localStorage.removeItem('smalltubeSearchHistory');
-        renderSearchHistory();
+    async function deleteSearchHistoryItem(index) {
+        if (!currentUser) {
+            let history = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+            return;
+        }
+        
+        try {
+            // First get the full history to find the ID
+            const history = await loadSearchHistory();
+            if (index >= 0 && index < history.length) {
+                const response = await fetch(`${API_BASE_URL}/search-history/${history[index].id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to delete item');
+            }
+        } catch (error) {
+            console.error('Error deleting search item:', error);
+            // Fallback to localStorage
+            let history = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
+        }
     }
 
-    function deleteSearchHistoryItem(index) {
-        let history = loadSearchHistory();
-        history.splice(index, 1);
-        localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
-        renderSearchHistory();
-    }
-
-    function renderSearchHistory() {
-        const history = loadSearchHistory();
+    async function renderSearchHistory(filter = '') {
+        const history = await loadSearchHistory();
         const dropdown = document.getElementById('search-history-dropdown');
         dropdown.innerHTML = '';
 
@@ -784,8 +850,13 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         dropdown.appendChild(header);
 
+        // Filter history
+        const filteredHistory = filter
+            ? history.filter(q => q.toLowerCase().includes(filter.toLowerCase()))
+            : history;
+
         // No history
-        if (history.length === 0) {
+        if (filteredHistory.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'search-history-item';
             empty.textContent = 'No search history';
@@ -799,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Items
-        history.forEach((query, index) => {
+        filteredHistory.forEach((query, index) => {
             const item = document.createElement('div');
             item.className = 'search-history-item';
 
@@ -820,16 +891,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Fill input and search on click
             item.addEventListener('mousedown', (e) => {
-                // Only if not clicking delete
                 if (!e.target.closest('.search-history-delete')) {
                     videoInput.value = query;
-                    // Prevent blur so dropdown stays open
                     e.preventDefault();
                     setTimeout(() => {
                         videoInput.focus();
                         videoInput.setSelectionRange(videoInput.value.length, videoInput.value.length);
-                        document.getElementById('search-history-dropdown').style.display = 'none'; // Close dropdown
-                        searchYouTube(query); // Trigger search
+                        document.getElementById('search-history-dropdown').style.display = 'none';
+                        searchYouTube(query);
                     }, 0);
                 }
             });
@@ -873,6 +942,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize
+    loadSettings();
     checkAuth();
 
     // Auto-load video from URL hash if present and valid
