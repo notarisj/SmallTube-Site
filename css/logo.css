@@ -1,7 +1,7 @@
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 10px; /* Consistent spacing */
+    gap: 8px; /* Consistent spacing */
 }
 
 .small-logo {

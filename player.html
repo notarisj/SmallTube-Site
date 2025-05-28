@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmallTube Player</title>
+    <meta name="description"
+        content="SmallTube Player - A lightweight YouTube player for seamless video playback without ads or tracking." />
+    <meta name="keywords" content="SmallTube, YouTube player, lightweight, no ads, no tracking, video playback" />
+    <meta name="author" content="Ioannis Notaris" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <link rel="canonical" href="https://smalltube.notaris.dev/player.html" />
+    <link rel="icon" href="images/icon.png" type="image/png" />
+
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <!-- <link rel="stylesheet" href="css/footer.css"> -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="css/player.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/logo.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
     <div class="galaxy">
-      <div class="stars"></div>
-      <div class="stars2"></div>
-      <div class="stars3"></div>
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
     </div>
 
     <nav>
@@ -27,28 +37,18 @@
             <img src="images/logo.png" alt="SmallTube Logo" class="small-logo" />
             <a href="#" class="logo">Small<span>Tube</span></a><a class="logo fade-in">Player</a>
         </div>
-        
+
         <div class="nav-center">
             <div class="input-section">
-                <input 
-                    type="text" 
-                    id="video-input" 
-                    placeholder="Enter YouTube video ID or search query..." 
-                    autocomplete="off"
-                    disabled
-                >
+                <input type="text" id="video-input" placeholder="Enter YouTube video ID or search query..."
+                    autocomplete="off" disabled>
                 <button class="search-btn" id="search-btn">
                     <i class="fa-solid fa-magnifying-glass fa-xs"></i>
                 </button>
                 <div class="search-history-dropdown" id="search-history-dropdown"></div>
             </div>
         </div>
-        <div class="nav-right" >
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#">Player</a></li>
-                <li><a href="privacy.html">Privacy</a></li>
-            </ul>
+        <div class="nav-right">
             <button id="starfield-toggle" class="starfield-toggle" title="Toggle Starfield">
                 <i class="fas fa-star"></i>
             </button>
@@ -81,7 +81,8 @@
 
     <div class="player-container">
         <div class="video-embed-container" id="video-container" style="margin-top: 50px;"></div>
-        <div class="video-details-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="video-details-container"
+            style="display: flex; justify-content: space-between; align-items: center;">
             <div class="video-info-container" style="flex: 1;"></div>
             <div class="aspect-ratio-wrapper" style="flex-shrink: 0;">
                 <div class="aspect-ratio-controls">
@@ -122,7 +123,8 @@
             </div>
             <div class="form-group">
                 <label for="results-count">Results Count</label>
-                <input type="number" id="results-count" class="form-control" placeholder="Number of results (1-50)" min="1" max="50">
+                <input type="number" id="results-count" class="form-control" placeholder="Number of results (1-50)"
+                    min="1" max="50">
             </div>
             <button class="save-btn" id="save-settings">Save Settings</button>
         </div>
@@ -139,7 +141,7 @@
                 <button class="tab-btn active" id="login-tab">Login</button>
                 <button class="tab-btn" id="register-tab">Register</button>
             </div>
-            
+
             <div class="auth-form" id="login-form">
                 <div class="form-group">
                     <label for="modal-username">Username</label>
@@ -154,7 +156,7 @@
                     <button class="auth-btn" id="modal-login-btn">Login</button>
                 </div>
             </div>
-            
+
             <div class="auth-form" id="register-form" style="display: none;">
                 <div class="form-group">
                     <label for="reg-username">Username</label>
@@ -173,16 +175,16 @@
         </div>
     </div>
 
-<div class="bottom-navbar">
-  <footer class="navbar-footer">
-    <div class="footer-left">
-      <p>Made with ❤️ by <a href="https://github.com/notarisj" target="_blank">riznota</a></p>
+    <div class="bottom-navbar">
+        <footer class="navbar-footer">
+            <div class="footer-left">
+                <p>Made with ❤️ by <a href="https://github.com/notarisj" target="_blank">riznota</a></p>
+            </div>
+            <div class="footer-right">
+                <p>&copy; 2025 Ioannis Notaris. <a href="privacy.html">Privacy Policy</a></p>
+            </div>
+        </footer>
     </div>
-    <div class="footer-right">
-      <p>&copy; 2025 Ioannis Notaris. <a href="privacy.html">Privacy Policy</a></p>
-    </div>
-  </footer>
-</div>
 
     <div class="back-to-top">
         <i class="fas fa-arrow-up"></i>
@@ -194,4 +196,5 @@
     <script src="js/notification.js"></script>
     <script src="js/scroll-effects.js"></script>
 </body>
+
 </html>
