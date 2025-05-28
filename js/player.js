@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiKeyInput = document.getElementById('api-key');
     const resultsCountInput = document.getElementById('results-count');
 
+    const API_BASE_URL = 'http://192.168.31.2:8000'; // Update with your API base URL
+    const ACCESS_TOKEN_EXPIRE_MINUTES = 60; // Set this to match your backend config
+
     // Auth modal elements
     const authModal = document.getElementById('auth-modal');
     const authModalBtn = document.getElementById('auth-modal-btn');
@@ -60,69 +63,176 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Load saved settings
-    function loadSettings() {
-        const savedSettings = JSON.parse(localStorage.getItem('smalltubePlayerSettings')) || {};
-        apiKey = savedSettings.apiKey || '';
-        resultsCount = savedSettings.resultsCount || 10;
-        
-        apiKeyInput.value = apiKey;
-        resultsCountInput.value = resultsCount;
+    async function loadSettings() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/settings`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load settings');
+            
+            const settings = await response.json();
+            apiKey = settings.youtube_api_key || '';
+            resultsCount = settings.results_count || 10;
+            
+            // Update UI
+            apiKeyInput.value = apiKey;
+            resultsCountInput.value = resultsCount;
+            
+            // Load other settings
+            if (settings.aspect_ratio) {
+                videoContainer.style.aspectRatio = settings.aspect_ratio;
+                document.querySelector(`.ratio-btn[data-ratio="${settings.aspect_ratio}"]`)?.classList.add('active');
+            }
+            
+            if (settings.theater_mode) {
+                videoEmbedContainer.classList.add('theater-mode');
+                theaterBtn.classList.add('active');
+            }
+            
+            if (settings.starfield_enabled !== undefined) {
+                starfieldEnabled = settings.starfield_enabled;
+                updateStarfieldVisibility();
+            }
+        } catch (error) {
+            console.error('Error loading settings:', error);
+            // Fallback to localStorage if available
+            const savedSettings = JSON.parse(localStorage.getItem('smalltubePlayerSettings')) || {};
+            apiKey = savedSettings.apiKey || '';
+            resultsCount = savedSettings.resultsCount || 10;
+            apiKeyInput.value = apiKey;
+            resultsCountInput.value = resultsCount;
+        }
     }
 
-    // Save settings
-    function saveSettings() {
+    async function saveSettings() {
         apiKey = apiKeyInput.value.trim();
         resultsCount = Math.min(50, Math.max(1, parseInt(resultsCountInput.value) || 10));
         
-        const settings = {
-            apiKey,
-            resultsCount
-        };
-        
-        localStorage.setItem('smalltubePlayerSettings', JSON.stringify(settings));
-        settingsModal.style.display = 'none';
-        
-        // Show confirmation
-        showNotification('success', 'Settings saved successfully!');
+        try {
+            const response = await fetch(`${API_BASE_URL}/settings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({
+                    youtube_api_key: apiKey,
+                    results_count: resultsCount,
+                    aspect_ratio: videoContainer.style.aspectRatio,
+                    theater_mode: videoEmbedContainer.classList.contains('theater-mode'),
+                    starfield_enabled: starfieldEnabled
+                })
+            });
+            
+            if (!response.ok) throw new Error('Failed to save settings');
+            
+            showNotification('success', 'Settings saved successfully!');
+            settingsModal.style.display = 'none';
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            // Fallback to localStorage
+            const settings = {
+                apiKey,
+                resultsCount
+            };
+            localStorage.setItem('smalltubePlayerSettings', JSON.stringify(settings));
+            showNotification('error', 'Failed to save to server. Using local storage.');
+            settingsModal.style.display = 'none';
+        }
     }
 
     // Authentication functions
     async function login(username, password) {
+    try {
+        const formData = new URLSearchParams();
+        formData.append('username', username);
+        formData.append('password', password);
+        formData.append('grant_type', 'password');
+        
+        const response = await fetch(`${API_BASE_URL}/token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            let errorMessage = 'Login failed';
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const errorData = await response.json();
+                errorMessage = errorData.detail || errorMessage;
+            } else {
+                errorMessage = await response.text() || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        authToken = data.access_token;
+        currentUser = username;
+        
+        // Store tokens securely (consider using HttpOnly cookies in production)
+        localStorage.setItem('smalltubeAuth', JSON.stringify({
+            token: authToken,
+            refresh_token: data.refresh_token,
+            username: currentUser,
+            expires_at: Date.now() + (ACCESS_TOKEN_EXPIRE_MINUTES * 60 * 1000)
+        }));
+        
+        updateAuthUI();
+        return true;
+    } catch (error) {
+        console.error('Login error:', error);
+        showNotification('error', 'Login failed. Please check your credentials!');
+        return false;
+    }
+}
+
+    // Add token refresh logic
+    async function refreshAuthToken() {
+        const authData = JSON.parse(localStorage.getItem('smalltubeAuth'));
+        if (!authData?.refresh_token) return false;
+        
         try {
-            const response = await fetch('http://localhost:8000/token', {
+            const response = await fetch(`${API_BASE_URL}/token/refresh`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+                body: JSON.stringify({
+                    refresh_token: authData.refresh_token
+                })
             });
-
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-
+            
+            if (!response.ok) throw new Error('Token refresh failed');
+            
             const data = await response.json();
             authToken = data.access_token;
-            currentUser = username;
+            currentUser = authData.username;
             
-            // Save token to localStorage
+            // Update stored token
             localStorage.setItem('smalltubeAuth', JSON.stringify({
+                ...authData,
                 token: authToken,
-                username: currentUser
+                expires_at: Date.now() + (ACCESS_TOKEN_EXPIRE_MINUTES * 60 * 1000)
             }));
             
-            updateAuthUI();
             return true;
         } catch (error) {
-            console.error('Login error:', error);
-            showNotification('error', 'Login failed. Please check your credentials!');
+            console.error('Token refresh error:', error);
             return false;
         }
     }
 
     async function register(username, email, password) {
         try {
-            const response = await fetch('http://localhost:8000/register', {
+            const response = await fetch('http://192.168.31.2:8000/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,19 +300,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Check authentication on page load
-    function checkAuth() {
+    async function checkAuth() {
         const savedAuth = localStorage.getItem('smalltubeAuth');
         if (savedAuth) {
             try {
                 const authData = JSON.parse(savedAuth);
+                
+                // Check if token is expired
+                if (Date.now() > authData.expires_at) {
+                    const refreshed = await refreshAuthToken();
+                    if (!refreshed) {
+                        throw new Error('Token expired and refresh failed');
+                    }
+                }
+                
                 authToken = authData.token;
                 currentUser = authData.username;
+                
+                // Verify token is still valid
+                const response = await fetch(`${API_BASE_URL}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Token verification failed');
+                
+                updateAuthUI();
             } catch (e) {
-                console.error('Failed to parse auth data', e);
+                console.error('Auth check failed', e);
+                logout();
             }
         }
         updateAuthUI();
     }
+
 
     // Check if input is a video ID (simple check)
     function isVideoId(input) {
@@ -411,6 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
             authModal.style.display = 'flex';
             return;
         }
+        loadSettings(); // <-- Only load settings when opening modal
         settingsModal.style.display = 'flex';
     });
 
@@ -741,9 +874,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize
     checkAuth();
-    loadSettings();
 
-        // Auto-load video from URL hash if present and valid
+    // Auto-load video from URL hash if present and valid
     function tryAutoLoadVideoFromHash() {
         const hash = window.location.hash.replace(/^#/, '').trim();
         // Accept only 11-char YouTube video IDs (no key=value, just #VIDEOID)
