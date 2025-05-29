@@ -203,7 +203,7 @@ export function setupHistoryControls() {
     });
     videoInput.addEventListener('blur', function() {
         setTimeout(() => {
-            document.getElementById('search-history-dropdown').style.display = 'none';
+            document.getElementById('search-history-dropdown').style.display = '';
         }, 200);
     });
 
