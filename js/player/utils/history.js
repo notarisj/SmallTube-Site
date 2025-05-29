@@ -114,8 +114,8 @@ async function loadSearchHistoryDetails() {
     }
 }
 
-async function renderSearchHistory(filter = '') {
-    const history = await loadSearchHistory();
+async function renderSearchHistory(filter = '', forceReload = false) {
+    const history = await loadSearchHistory(forceReload);
     const dropdown = document.getElementById('search-history-dropdown');
     dropdown.innerHTML = '';
 
@@ -154,8 +154,9 @@ async function renderSearchHistory(filter = '') {
 
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            deleteSearchHistoryItem(index);
-            renderSearchHistory(filter);
+            deleteSearchHistoryItem(index).then(() => {
+                renderSearchHistory(filter, true); // Force reload after delete
+            });
         });
 
         item.addEventListener('mousedown', (e) => {
@@ -202,7 +203,7 @@ export function setupHistoryControls() {
     });
     videoInput.addEventListener('blur', function() {
         setTimeout(() => {
-            document.getElementById('search-history-dropdown').style.display = '';
+            document.getElementById('search-history-dropdown').style.display = 'none';
         }, 200);
     });
 

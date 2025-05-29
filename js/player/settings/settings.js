@@ -54,6 +54,9 @@ async function saveSettings(newSettings) {
         });
         
         if (!response.ok) throw new Error('Failed to save settings');
+
+        setApiKey(apiKey);
+        setResultsCount(resultsCount);
         
         showNotification('success', 'Settings saved successfully!');
         return true;

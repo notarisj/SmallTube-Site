@@ -4,6 +4,9 @@ import { saveToSearchHistory } from '../utils/history.js';
 import { currentUser } from '../auth/auth.js';
 import { isVideoId, showVideo } from './player.js';
 
+const welcomeMsg = document.querySelector('.welcome-message');
+
+
 let apiKey = '';
 let resultsCount = 10;
 
@@ -56,7 +59,6 @@ async function searchYouTube(query) {
             duration: video.contentDetails.duration
         })));
 
-        const welcomeMsg = document.querySelector('.welcome-message');
         if (welcomeMsg) welcomeMsg.style.display = 'none';
         document.getElementById('search-history-dropdown').style.display = 'none';
         
@@ -92,6 +94,7 @@ function setupSearchEventListeners() {
                 saveToSearchHistory(input);
                 if (isVideoId(input)) {
                     showVideo(input);
+                    if (welcomeMsg) welcomeMsg.style.display = 'none';
                 } else {
                     searchYouTube(input);
                 }

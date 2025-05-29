@@ -1,7 +1,7 @@
 /* notification.css */
 .notification-container {
   position: fixed;
-  bottom: 20px;
+  bottom: 45px;
   right: 20px;
   z-index: 9999;
   display: flex;
