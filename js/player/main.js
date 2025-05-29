@@ -8,7 +8,7 @@ import { setupStarfield } from './ui/starfield.js';
 import { setupTheaterMode } from './player/player-ui.js';
 import { setupAspectRatioControls } from './player/player-ui.js';
 import { setupHistoryControls } from './utils/history.js';
-import { isVideoId, showVideo } from './player/player.js';
+import { showVideo } from './player/player.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize all components

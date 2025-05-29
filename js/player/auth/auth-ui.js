@@ -1,4 +1,4 @@
-import { login, register, logout, checkAuth, currentUser } from './auth.js';
+import { login, register, logout, currentUser } from './auth.js';
 
 const videoInput = document.getElementById('video-input');
 const videoContainer = document.getElementById('video-container');
@@ -6,7 +6,6 @@ const resultsGrid = document.getElementById('results-grid');
 const settingsBtn = document.getElementById('nav-settings-btn');
 const authModal = document.getElementById('auth-modal');
 const authModalBtn = document.getElementById('auth-modal-btn');
-const closeAuthModal = document.getElementById('close-auth-modal');
 const loginTab = document.getElementById('login-tab');
 const registerTab = document.getElementById('register-tab');
 const loginForm = document.getElementById('login-form');

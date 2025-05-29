@@ -3,7 +3,6 @@ import { showVideo } from './player.js';
 const theaterBtn = document.querySelector('.theater-btn');
 const videoEmbedContainer = document.querySelector('.video-embed-container');
 const videoDetailsContainer = document.querySelector('.video-details-container');
-const aspectRatioWrapper = document.querySelector('.aspect-ratio-wrapper');
 
 function setupTheaterMode() {
     theaterBtn.addEventListener('click', () => {

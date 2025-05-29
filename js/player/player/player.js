@@ -1,5 +1,4 @@
 import { currentUser } from '../auth/auth.js';
-import { showNotification } from '../ui/notifications.js';
 
 let currentVideoId = '';
 let currentSearchResults = [];

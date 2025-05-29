@@ -1,6 +1,5 @@
 import { fetchWithAuthRetry } from './api.js';
 import { currentUser } from '../auth/auth.js';
-import { showNotification } from '../ui/notifications.js';
 import { isVideoId, showVideo } from '../player/player.js';
 import { searchYouTube } from '../player/search.js';
 

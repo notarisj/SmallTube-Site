@@ -1,5 +1,4 @@
 import { loadSettings, saveSettings } from './settings.js';
-import { showNotification } from '../ui/notifications.js';
 import { currentUser } from '../auth/auth.js';
 import { apiKey as searchApiKey, resultsCount as searchResultsCount } from '../player/search.js';
 
