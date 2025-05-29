@@ -6,6 +6,8 @@ import { searchYouTube } from '../player/search.js';
 const API_BASE_URL = 'http://192.168.31.2:8000';
 const videoInput = document.getElementById('video-input');
 
+let cachedHistory = null;
+
 export async function saveToSearchHistory(query) {
     if (!currentUser || !query.trim()) return;
     
@@ -29,21 +31,24 @@ export async function saveToSearchHistory(query) {
     }
 }
 
-async function loadSearchHistory() {
-    if (!currentUser) {
-        return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+async function loadSearchHistory(forceReload = false) {
+    if (cachedHistory && !forceReload) {
+        return cachedHistory;
     }
-    
+    if (!currentUser) {
+        cachedHistory = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        return cachedHistory;
+    }
     try {
         const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/`);
-        
         if (!response.ok) throw new Error('Failed to load history');
-        
         const data = await response.json();
-        return data.map(item => item.query);
+        cachedHistory = data.map(item => item.query);
+        return cachedHistory;
     } catch (error) {
         console.error('Error loading search history:', error);
-        return JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        cachedHistory = JSON.parse(localStorage.getItem('smalltubeSearchHistory')) || [];
+        return cachedHistory;
     }
 }
 
@@ -63,6 +68,7 @@ async function clearSearchHistory() {
         console.error('Error clearing search history:', error);
         localStorage.removeItem('smalltubeSearchHistory');
     }
+    cachedHistory = null;
 }
 
 async function deleteSearchHistoryItem(index) {
@@ -88,6 +94,7 @@ async function deleteSearchHistoryItem(index) {
         history.splice(index, 1);
         localStorage.setItem('smalltubeSearchHistory', JSON.stringify(history));
     }
+    cachedHistory = null;
 }
 
 async function loadSearchHistoryDetails() {
@@ -186,7 +193,10 @@ export function setupHistoryControls() {
     searchHistoryDropdown.className = 'search-history-dropdown';
     document.querySelector('.input-section').appendChild(searchHistoryDropdown);
 
-    videoInput.addEventListener('focus', () => renderSearchHistory(''));
+    videoInput.addEventListener('focus', () => {
+        cachedHistory = null; // Always reload on focus
+        renderSearchHistory('');
+    });
     videoInput.addEventListener('input', function() {
         renderSearchHistory(this.value.trim());
     });

@@ -2,6 +2,7 @@ import { showSearchResults } from './player.js';
 import { showNotification } from '../ui/notifications.js';
 import { saveToSearchHistory } from '../utils/history.js';
 import { currentUser } from '../auth/auth.js';
+import { isVideoId, showVideo } from './player.js';
 
 let apiKey = '';
 let resultsCount = 10;
