@@ -83,20 +83,20 @@ document.addEventListener('DOMContentLoaded', function() {
             resultsCountInput.value = resultsCount;
             
             // Load other settings
-            if (settings.aspect_ratio) {
-                videoContainer.style.aspectRatio = settings.aspect_ratio;
-                document.querySelector(`.ratio-btn[data-ratio="${settings.aspect_ratio}"]`)?.classList.add('active');
-            }
+            // if (settings.aspect_ratio) {
+            //     videoContainer.style.aspectRatio = settings.aspect_ratio;
+            //     document.querySelector(`.ratio-btn[data-ratio="${settings.aspect_ratio}"]`)?.classList.add('active');
+            // }
             
-            if (settings.theater_mode) {
-                videoEmbedContainer.classList.add('theater-mode');
-                theaterBtn.classList.add('active');
-            }
+            // if (settings.theater_mode) {
+            //     videoEmbedContainer.classList.add('theater-mode');
+            //     theaterBtn.classList.add('active');
+            // }
             
-            if (settings.starfield_enabled !== undefined) {
-                starfieldEnabled = settings.starfield_enabled;
-                updateStarfieldVisibility();
-            }
+            // if (settings.starfield_enabled !== undefined) {
+            //     starfieldEnabled = settings.starfield_enabled;
+            //     updateStarfieldVisibility();
+            // }
         } catch (error) {
             console.error('Error loading settings:', error);
             // Fallback to localStorage if available

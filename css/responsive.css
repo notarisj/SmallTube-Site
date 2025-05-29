@@ -51,6 +51,13 @@
     nav ul {
         gap: 1rem;
     }
+
+    nav,
+    nav.no-blur {
+        background: rgba(26, 26, 26, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
 }
 
 @media (max-width: 480px) {

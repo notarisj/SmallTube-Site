@@ -848,7 +848,7 @@ nav {
 
 .welcome-message {
     position: fixed;
-    top: 50%;
+    top: max(230px, 50%); /* Never more than 100px from top */
     left: 50%;
     transform: translate(-50%, -65%);
     text-align: center;
@@ -977,4 +977,11 @@ body:hover .bottom-navbar {
 .footer-left a:hover,
 .footer-right a:hover {
   color: #ff4d4d;
+}
+
+@media (max-width: 768px) {
+
+    .results-grid {
+        margin-top: 4rem;
+    }
 }
