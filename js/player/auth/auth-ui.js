@@ -88,6 +88,22 @@ function setupAuthEventListeners() {
         }
     });
 
+    [modalUsername, modalPassword].forEach(input => {
+        input.addEventListener('keypress', async function(e) {
+            if (e.key === 'Enter') {
+                const username = modalUsername.value.trim();
+                const password = modalPassword.value.trim();
+                if (username && password) {
+                    const success = await login(username, password);
+                    if (success) {
+                        authModal.style.display = 'none';
+                        updateAuthUI();
+                    }
+                }
+            }
+        });
+    });
+
     modalRegisterBtn.addEventListener('click', async () => {
         const username = regUsername.value.trim();
         const email = regEmail.value.trim();
