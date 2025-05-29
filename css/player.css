@@ -168,12 +168,17 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 0.5rem;
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
+    /* Remove fixed width if present */
+    /* width: 1000px; */
+    gap: 2rem;
+    box-sizing: border-box;
 }
 
 /* Video details theater mode */
 .video-details-container.theater-mode {
-    width: 1250px; /* Wider container in theater mode */
+    max-width: 1250px;
 }
 
 /* Video info section under player */
@@ -466,7 +471,6 @@
 .user-dropdown span {
     display: block;
     color: white;
-    margin-bottom: 0.5rem;
     white-space: nowrap;
 }
 
@@ -479,7 +483,6 @@
     cursor: pointer;
     width: 100%;
     font-size: 0.9rem;
-    margin-top: 10px;
 }
 
 #nav-search-btn:hover {
@@ -1003,4 +1006,73 @@ body:hover .bottom-navbar {
     font-size: 0.85em;
     z-index: 2;
     pointer-events: none;
+}
+
+#user-dropdown hr {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid #444;
+    width: 100%;
+    height: 1px;
+    padding: 0;
+}
+
+.user-dropdown button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-left: 0;
+    width: 100%;
+    position: relative;
+    height: 40px; /* Ensures enough height for vertical centering */
+}
+
+.user-dropdown button i {
+    flex: none;
+    width: 20px;
+    text-align: left;
+    display: flex;           /* Changed from inline-block to flex */
+    align-items: center;     /* Vertically center the icon */
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.user-dropdown button span {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    align-items: center;     /* Vertically center the text */
+    justify-content: center;
+    height: 100%;
+    margin-right: 2rem;
+}
+
+.user-nav-item:has(.user-dropdown[style*="display: block"]) .auth-modal-btn,
+.user-nav-item:has(.user-dropdown.open) .auth-modal-btn {
+    color: #ff4d4d;
+}
+
+.auth-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        135deg,
+        #ff4d4d,
+        #ff4d4d 20px,
+        #ff6b6b 20px,
+        #ff6b6b 40px
+    );
+    background-size: 40px 100%;
+    animation: progress-bar-stripes 1s linear infinite;
+    border-radius: 10px 10px 0 0;
+    z-index: 10;
+}
+
+@keyframes progress-bar-stripes {
+    0% { background-position-x: 0; }
+    100% { background-position-x: 40px; }
 }

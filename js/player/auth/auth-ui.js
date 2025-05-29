@@ -1,4 +1,5 @@
 import { login, register, logout, currentUser } from './auth.js';
+import { showNotification } from '../ui/notifications.js';
 
 const videoInput = document.getElementById('video-input');
 const videoContainer = document.getElementById('video-container');
@@ -20,6 +21,7 @@ const regPassword = document.getElementById('reg-password');
 const userDropdown = document.getElementById('user-dropdown');
 const navUsername = document.getElementById('nav-username');
 const navLogoutBtn = document.getElementById('nav-logout-btn');
+const authProgressBar = document.getElementById('auth-progress-bar');
 
 function updateAuthUI() {
     if (currentUser) {
@@ -74,34 +76,40 @@ function setupAuthEventListeners() {
         loginForm.style.display = 'none';
     });
 
-    modalLoginBtn.addEventListener('click', async () => {
-        const username = modalUsername.value.trim();
-        const password = modalPassword.value.trim();
-        
-        if (username && password) {
-            const success = await login(username, password);
-            if (success) {
-                authModal.style.display = 'none';
-                updateAuthUI();
+modalLoginBtn.addEventListener('click', async () => {
+    const username = modalUsername.value.trim();
+    const password = modalPassword.value.trim();
+    
+    if (username && password) {
+        authProgressBar.style.display = 'block'; // Show progress bar
+        const success = await login(username, password);
+        authProgressBar.style.display = 'none'; // Hide progress bar
+        if (success) {
+            authModal.style.display = 'none';
+            updateAuthUI();
+        }
+    }
+});
+
+[modalUsername, modalPassword].forEach(input => {
+    input.addEventListener('keypress', async function(e) {
+        if (e.key === 'Enter') {
+            const username = modalUsername.value.trim();
+            const password = modalPassword.value.trim();
+            if (username && password) {
+                authProgressBar.style.display = 'block'; // Show progress bar
+                const success = await login(username, password);
+                authProgressBar.style.display = 'none'; // Hide progress bar
+                if (success) {
+                    authModal.style.display = 'none';
+                    updateAuthUI();
+                } else {
+                    showNotification('error', 'Login failed. Please check your credentials.');
+                }
             }
         }
     });
-
-    [modalUsername, modalPassword].forEach(input => {
-        input.addEventListener('keypress', async function(e) {
-            if (e.key === 'Enter') {
-                const username = modalUsername.value.trim();
-                const password = modalPassword.value.trim();
-                if (username && password) {
-                    const success = await login(username, password);
-                    if (success) {
-                        authModal.style.display = 'none';
-                        updateAuthUI();
-                    }
-                }
-            }
-        });
-    });
+});
 
     modalRegisterBtn.addEventListener('click', async () => {
         const username = regUsername.value.trim();

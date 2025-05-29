@@ -45,7 +45,6 @@ function showVideo(videoId) {
         infoContainer.innerHTML = `
             <h2 class="video-title-large">${videoData.snippet.title}</h2>
             <div class="channel-info">
-                <img src="${videoData.snippet.thumbnails.default.url}" alt="${videoData.snippet.channelTitle}" class="channel-icon">
                 <span class="channel-name">${videoData.snippet.channelTitle}</span>
             </div>
         `;

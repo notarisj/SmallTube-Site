@@ -56,12 +56,18 @@
                 <button id="auth-modal-btn" class="auth-modal-btn">
                     <i class="fas fa-user"></i>
                 </button>
-                <div class="user-dropdown" id="user-dropdown">
-                    <span id="nav-username"></span>
-                    <hr>
-                    <button id="nav-settings-btn">Settings</button>
-                    <button id="nav-logout-btn">Logout</button>
-                </div>
+            <div class="user-dropdown" id="user-dropdown">
+                <span id="nav-username"></span>
+                <hr>
+                <button id="nav-settings-btn">
+                    <i class="fa-solid fa-gear" style="margin-right: 8px;"></i>
+                    <span>Settings</span>
+                </button>
+                <button id="nav-logout-btn">
+                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
             </div>
         </div>
     </nav>
@@ -133,6 +139,7 @@
     <!-- Auth Modal -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
+            <div class="auth-progress-bar" id="auth-progress-bar" style="display: none;"></div>
             <div class="modal-header">
                 <h3 class="modal-title">Login / Register</h3>
                 <button class="close-modal" id="close-auth-modal"></button>

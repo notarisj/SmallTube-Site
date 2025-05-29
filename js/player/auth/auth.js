@@ -1,3 +1,5 @@
+import { showNotification } from '../ui/notifications.js';
+
 const API_BASE_URL = 'http://192.168.31.2:8000';
 const ACCESS_TOKEN_EXPIRE_MINUTES = 60;
 
@@ -45,6 +47,11 @@ async function login(username, password) {
         return true;
     } catch (error) {
         console.error('Login error:', error);
+        if (error.message.includes('Failed to fetch')) {
+            showNotification('error', 'Network error: Unable to connect to the server.');
+        } else {
+            showNotification('error', 'Login error: ' + error.message);
+        }
         return false;
     }
 }

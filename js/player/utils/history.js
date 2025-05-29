@@ -184,7 +184,7 @@ async function renderSearchHistory(filter = '', forceReload = false) {
     header.querySelector('.search-history-clear').addEventListener('click', (e) => {
         e.stopPropagation();
         clearSearchHistory();
-        renderSearchHistory(filter);
+        renderSearchHistory(filter, true); // Force reload after clearing
     });
 }
 
