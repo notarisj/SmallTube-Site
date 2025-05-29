@@ -127,6 +127,12 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+.video-result:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transition: transform 0.08s cubic-bezier(0.4,0,0.2,1), box-shadow 0.08s;
+}
+
 .thumbnail-container {
     position: relative;
     padding-top: 56.25%;
