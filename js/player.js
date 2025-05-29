@@ -45,7 +45,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSearchResults = [];
     let apiKey = '';
     let resultsCount = 10;
-    let authToken = '';
+    // Initialize authToken with saved value if present
+    let authToken = (() => {
+        const saved = localStorage.getItem('smalltubeAuth');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                return data.token || '';
+            } catch {
+                return '';
+            }
+        }
+        return '';
+    })();
     let currentUser = null;
 
     // make searchBtn trigger videoInput textfield
@@ -65,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load saved settings
     async function loadSettings() {
         try {
-            const response = await fetch(`${API_BASE_URL}/settings`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/settings`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${authToken}`
@@ -113,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsCount = Math.min(50, Math.max(1, parseInt(resultsCountInput.value) || 10));
         
         try {
-            const response = await fetch(`${API_BASE_URL}/settings`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/settings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -197,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add token refresh logic
     async function refreshAuthToken() {
         const authData = JSON.parse(localStorage.getItem('smalltubeAuth'));
-        if (!authData?.refresh_token) return false;
+        if (!authData?.token) return false;
         
         try {
             const response = await fetch(`${API_BASE_URL}/token/refresh`, {
@@ -206,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    refresh_token: authData.refresh_token
+                    refresh_token: authData.token
                 })
             });
             
@@ -423,13 +435,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const videoElement = document.createElement('div');
             videoElement.className = 'video-result';
             videoElement.innerHTML = `
-                <div class="thumbnail-container">
+                <div class="thumbnail-container" style="position:relative;">
                     <img src="${video.snippet.thumbnails.medium.url}" alt="${video.snippet.title}" class="thumbnail">
+                    <span class="video-duration">${formatDuration(video.duration || '')}</span>
                 </div>
                 <div class="video-info">
                     <h3 class="video-title">${video.snippet.title}</h3>
                     <div class="video-channel">
-                        <img src="${video.snippet.thumbnails.default.url}" alt="${video.snippet.channelTitle}" class="video-channel-icon">
                         ${video.snippet.channelTitle}
                     </div>
                 </div>
@@ -497,7 +509,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // 5. Show filtered results
             showSearchResults(filtered.map(video => ({
                 id: { videoId: video.id },
-                snippet: video.snippet
+                snippet: video.snippet,
+                duration: video.contentDetails.duration
             })));
         } catch (error) {
             console.error('Error searching YouTube:', error);
@@ -737,12 +750,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    async function fetchWithAuthRetry(url, options = {}, retry = true) {
+        if (!options.headers) options.headers = {};
+        if (authToken) options.headers['Authorization'] = `Bearer ${authToken}`;
+
+        let response = await fetch(url, options);
+
+        if (response.status === 401 && retry) {
+            // Try to refresh token
+            const refreshed = await refreshAuthToken();
+            if (refreshed) {
+                // Update Authorization header with new token
+                options.headers['Authorization'] = `Bearer ${authToken}`;
+                response = await fetch(url, options);
+            } else {
+                logout();
+                throw new Error('Unauthorized and token refresh failed');
+            }
+        }
+
+        return response;
+    }
+
     // Search history functions
     async function saveToSearchHistory(query) {
         if (!currentUser || !query.trim()) return;
         
         try {
-            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -769,7 +804,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`
                 }
@@ -791,7 +826,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`
                 }
@@ -814,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch(`${API_BASE_URL}/search-history/`, {
+            const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${authToken}`
@@ -844,7 +879,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 index < history.length &&
                 history[index].id !== undefined
             ) {
-                const response = await fetch(`${API_BASE_URL}/search-history/${history[index].id}`, {
+                const response = await fetchWithAuthRetry(`${API_BASE_URL}/search-history/${history[index].id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authToken}`
@@ -942,6 +977,22 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             clearSearchHistory();
         });
+    }
+
+    function formatDuration(isoDuration) {
+        // Example: PT1H2M3S, PT4M5S, PT30S
+        const match = isoDuration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+        if (!match) return '';
+        const hours = parseInt(match[1] || 0, 10);
+        const minutes = parseInt(match[2] || 0, 10);
+        const seconds = parseInt(match[3] || 0, 10);
+        if (hours) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds
+                .toString()
+                .padStart(2, '0')}`;
+        } else {
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
     }
 
     // Prevent dropdown from closing when clicking inside
