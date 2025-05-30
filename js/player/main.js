@@ -1,6 +1,7 @@
 import { setupAuthEventListeners, updateAuthUI } from './auth/auth-ui.js';
 import { checkAuth } from './auth/auth.js';
 import { setupSearchEventListeners } from './player/search.js';
+import { loadSettings } from './settings/settings.js';
 import { setupSettingsUI } from './settings/settings-ui.js';
 import { setupNavbarBehavior } from './ui/navbar.js';
 import { setupStarfield } from './ui/starfield.js';
@@ -11,11 +12,12 @@ import { showVideo } from './player/player.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize all components
-    await checkAuth();
+    let isLoggedIn = await checkAuth();
     updateAuthUI();
     setupAuthEventListeners();
     setupSearchEventListeners();
     setupNavbarBehavior();
+    if (isLoggedIn) await loadSettings();
     setupStarfield();
     setupTheaterMode();
     setupAspectRatioControls();
