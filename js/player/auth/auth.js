@@ -1,4 +1,5 @@
 import { showNotification } from '../ui/notifications.js';
+import { loadSettings } from '../settings/settings.js';
 
 const API_BASE_URL = 'http://192.168.31.2:8000';
 const ACCESS_TOKEN_EXPIRE_MINUTES = 60;
@@ -36,6 +37,8 @@ async function login(username, password) {
         const data = await response.json();
         authToken = data.access_token;
         currentUser = username;
+
+        await loadSettings();
         
         localStorage.setItem('smalltubeAuth', JSON.stringify({
             token: authToken,

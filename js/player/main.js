@@ -1,7 +1,6 @@
 import { setupAuthEventListeners, updateAuthUI } from './auth/auth-ui.js';
 import { checkAuth } from './auth/auth.js';
 import { setupSearchEventListeners } from './player/search.js';
-import { loadSettings } from './settings/settings.js';
 import { setupSettingsUI } from './settings/settings-ui.js';
 import { setupNavbarBehavior } from './ui/navbar.js';
 import { setupStarfield } from './ui/starfield.js';
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     updateAuthUI();
     setupAuthEventListeners();
     setupSearchEventListeners();
-    await loadSettings();
     setupNavbarBehavior();
     setupStarfield();
     setupTheaterMode();
